@@ -1,0 +1,102 @@
+
+\documentclass[a4paper,10pt]{article}
+\usepackage[left=2cm,top=2.5cm,right=2cm]{geometry}
+\usepackage[spanish,activeacute]{babel}
+\usepackage{caratula}
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage{url}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb} 
+
+ 
+\parindent = 12 pt
+\parskip = 6 pt
+
+\usepackage{fancyhdr}
+\usepackage{natbib}
+\usepackage{graphicx}
+
+%para agregar el pdf del enunciado en el apendice A
+\usepackage{pdfpages}
+
+%encabezado de paginas
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead [L]{\scriptsize Trabajo Práctico Nº2}
+\fancyhead [R]{\scriptsize Giudice, Grenier, Junqueras, Pyrih}
+\fancyfoot[C]{\thepage}
+\renewcommand{\footrulewidth}{0.4pt} 
+
+\begin{document}
+
+%carátula
+\materia{Métodos Numéricos}
+\submateria{}
+\titulo{Trabajo Práctico Nº2}
+\subtitulo{\\ \\Reconocimiento de caras }
+%\grupo{Grupo: GGJP} 
+\integrante{Giudice, Carlos}{694/15}{carlosr.giudice@gmail.com}
+\integrante{Grenier, Michelle}{418/10}{michelle.grenier@hotmail.com}
+\integrante{Junqueras, Juan}{804/16}{juanjunqueras@gmail.com}
+\integrante{Pyrih, Franco}{520/12}{fpyrih@dc.uba.ar}
+\fecha{Primer cuatrimestre 2018}
+
+
+\maketitle
+
+
+
+%índice de contenidos
+\tableofcontents
+\newpage
+
+
+%sección ejemplo, despues la sacamos
+%\section{Ejemplo1}
+%There is a theory which states that if ever anyone discovers exactly what the %Universe is for and why it is here, it will instantly disappear and be replaced by %something even more bizarre and inexplicable.
+%There is another theory which states that this has already happened.\cite{riemann}
+%
+%\begin{figure}[h!]
+%\centering
+%\includegraphics[scale=1.7]{universe.jpg}
+%\caption{The Universe}
+%\label{fig:univerise}
+%\end{figure}
+
+
+%``I always thought something was fundamentally wrong with the universe %2''\citep{burden}\\
+
+%\newpage
+
+%secciones
+
+\include{sections/abstract}
+\clearpage
+
+\include{sections/theoretical_introduction}
+\clearpage
+
+\include{sections/development}
+\clearpage
+
+\include{sections/results}
+\clearpage
+
+\include{sections/discussion}
+\clearpage
+
+\include{sections/conclusions}
+\clearpage
+
+\include{sections/appendices}
+\clearpage
+
+\include{sections/references}
+\clearpage
+
+
+\end{document}
+
+
