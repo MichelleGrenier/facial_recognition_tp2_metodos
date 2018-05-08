@@ -1,0 +1,11 @@
+# binaries
+*.pdf
+*.zip
+
+# images
+ImagenesCaras
+ImagenesCarasRed
+full
+reduced
+*.pgm
+
