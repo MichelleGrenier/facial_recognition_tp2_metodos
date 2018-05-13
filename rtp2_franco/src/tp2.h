@@ -21,6 +21,31 @@ ifstream ArchivoPruebaKaggle;
 
 typedef vector < vector < double > > matriz; // CAMBIAR A INT ACA Y EN MAIN PARA KNN SIN REDUCCION Y COMENTAR TODO EL CODIGO QUE NO TENGA QUE VER CON EL METODO 0 (FUNCIONA MUCHO MAS RAPIDO), DOUBLE NECESARIO PARA METODOS DE REDUCCION
 
+
+
+string PasarAFormatoViejoEntrenamiento(string rutaDeArchFormatoViejo){
+	
+	string nombreArchFormatoNuevo  = "nuevo_" + rutaDeArchFormatoViejo;
+	//generar formato nuevo 
+	
+	
+	//fin generar formato nuevo
+	return nombreArchFormatoNuevo;
+}
+
+string PasarAFormatoViejoPrueba( string rutaDeArchFormatoViejo){
+	
+	string nombreArchFormatoNuevo  = "nuevo_" + rutaDeArchFormatoViejo;
+	//generar formato nuevo 
+	
+	
+	//fin generar formato nuevo
+	return nombreArchFormatoNuevo;
+}
+
+
+
+
 void imagenes_A_Vectores(matriz& a, matriz& b, ifstream& TestEntrada, int NoHayTest, int o, string RutaImgs) // capaz a "o" la llamaría "indice"
 {
 	COUT << "PASANDO IMAGENES A VECTORES " << o + 1 << endl;
