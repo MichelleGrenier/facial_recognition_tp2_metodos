@@ -70,7 +70,7 @@ int main(int argc, char** argv){
                 assert( strcmp(argv[7], "-o") == 0 );
                 RutaArchivoSalida = argv[8];
 
-		// acá van los parámetros para competir:
+		//acá van los parámetros para competir:
 		k = 3;
 		alfa = 15;
 
