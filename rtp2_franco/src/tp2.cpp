@@ -22,6 +22,7 @@ vector<double> autovalores, media;
 
 string RutaArchivoEntrada = "", RutaArchivoSalida = "", RutaArchivoSalidaReporte = "";
 string RutaImgsEntrenamiento = "", RutaImgsPrueba = "";
+string RutaEntrenamientoFormatoNuevo, RutaPruebaFormatoNuevo;
 string RutaImgs;
  
 ifstream TestEntrada;
@@ -59,10 +60,12 @@ int main(int argc, char** argv){
                 metodo = atoi(argv[2]);
 
                 assert( strcmp(argv[3], "-i") == 0 );
-                RutaImgsEntrenamiento = argv[4];
+                RutaEntrenamientoFormatoNuevo = argv[4];
+                RutaImgsEntrenamiento = PasarAFormatoViejoEntrenamiento(RutaEntrenamientoFormatoNuevo); //pasamos a formato viejo
 
                 assert( strcmp(argv[5], "-q") == 0 );
-                RutaImgsPrueba = argv[6];
+                RutaPruebaFormatoNuevo= argv[6];
+                RutaImgsPrueba = PasarAFormatoViejoPrueba(RutaPruebaFormatoNuevo);
 
                 assert( strcmp(argv[7], "-o") == 0 );
                 RutaArchivoSalida = argv[8];

@@ -13,32 +13,7 @@ matrix TrainImages, TestImages;
 
 
 
-void imagesToMatrices(matrix& train , matrix& test, ifstream& train_set) //por ahora levanto todo en train
-{
-	
-	int v = 0;
-	int i = 0;
-	int pixel;
-	int id_image;
-	
-	const int CANT_IMGS_ENTRENAMIENTO = 410;  	//(supongo q son menos q las totales, por ahora lo dejo asi)
-	const int CANT_PIXELS_EN_IMG = 10304; 		// 92 * 112
 
-	while(i < CANT_IMGS_ENTRENAMIENTO) 	{
-		//if (imagen actual va en train)
-		train.resize(i + 1);
-		train[i].resize(CANT_PIXELS_EN_IMG + 1); //en la ultima posicion de cada vector guardo el id de la imagen q representa
-
-		for(int j= 0; j< CANT_PIXELS_EN_IMG; j++){
-			
-			train_set >> pixel;
-			train[i][j] = pixel;
-			j++;		
-		}
-		train_set >> id_image;
-		train[i][CANT_PIXELS_EN_IMG] = id_image;
-		i++;
-	}
 }
 
 
