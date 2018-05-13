@@ -1,6 +1,11 @@
+# datasets
+*.csv
+
 # binaries
 *.pdf
 *.zip
+*.o
+src/tp
 
 # images
 ImagenesCaras
@@ -8,4 +13,8 @@ ImagenesCarasRed
 full
 reduced
 *.pgm
+
+# python
+*.pyc
+*.deps
 
