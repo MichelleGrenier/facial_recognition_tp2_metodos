@@ -1,7 +1,10 @@
 #include <iostream>
 //#include <istream>
 #include <fstream>
+#include <sstream>
+#include <string>
 #include <vector>
+#include <algorithm>
 #include "../ppmloader/ppmloader.h"
 
 
@@ -12,10 +15,117 @@ typedef vector < vector < double > > matrix;
 matrix TrainImages, TestImages;
 
 
-
-
+bool replace(string& str, const string& from, const string& to) {
+    size_t start_pos = str.find(from);
+    if(start_pos == string::npos)
+        return false;
+    str.replace(start_pos, from.length(), to);
+    return true;
 }
 
+
+string PasarAFormatoViejoEntrenamiento(string RutaEntrenamientoFormatoNuevo){
+	
+	string infilePath = RutaEntrenamientoFormatoNuevo;
+	replace(RutaEntrenamientoFormatoNuevo, ".csv", "_viejo.csv");
+	string RutaEntrenamientoFormatoViejo  = RutaEntrenamientoFormatoNuevo;
+	string outfilePath = RutaEntrenamientoFormatoViejo;
+	string line;
+	ifstream inFile(infilePath);
+	ofstream outFile;
+	outFile.open(outfilePath);
+	
+		
+	while( getline(inFile, line) ){
+		istringstream linestream(line);
+		string rutaImagen;
+		string idImagen;
+
+		getline(linestream,rutaImagen,',');
+		getline(linestream,idImagen,',');
+		
+		outFile<<idImagen;
+		
+			uchar* data = NULL;
+			int width = 0, height = 0;
+			PPM_LOADER_PIXEL_TYPE pt = PPM_LOADER_PIXEL_TYPE_INVALID;
+
+			bool ret = LoadPPMFile(&data, &width, &height, &pt, rutaImagen.c_str());
+			if (!ret || width == 0|| height == 0|| pt!=PPM_LOADER_PIXEL_TYPE_GRAY_8B){
+				throw runtime_error("test_load failed");
+			}
+			for (int h = 0; h < height; ++h){
+				for (int w = 0; w < width; ++w){
+						unsigned int pixel = (unsigned int)(data[h*width + w ]);
+						outFile<<","<<pixel;
+				}
+			}
+			
+		outFile<<endl;
+	}
+	
+	inFile.close();
+	outFile.close();
+
+	return RutaEntrenamientoFormatoViejo;
+}
+
+
+
+
+string PasarAFormatoViejoPrueba( string RutaPruebaFormatoNuevo){
+	
+	string infilePath = RutaPruebaFormatoNuevo;
+	replace(RutaPruebaFormatoNuevo, ".csv", "_viejo.csv");
+	string RutaPruebaFormatoViejo  = RutaPruebaFormatoNuevo;
+	string outfilePath = RutaPruebaFormatoViejo;
+	string line;
+	ifstream inFile(infilePath);
+	ofstream outFile;
+	outFile.open(outfilePath);
+	
+		
+	while( getline(inFile, line) ){
+		istringstream linestream(line);
+		string rutaImagen;
+		string idImagen;
+
+		getline(linestream,rutaImagen,',');
+		getline(linestream,idImagen,',');
+		
+		//outFile<<idImagen;
+		
+			uchar* data = NULL;
+			int width = 0, height = 0;
+			PPM_LOADER_PIXEL_TYPE pt = PPM_LOADER_PIXEL_TYPE_INVALID;
+
+			bool ret = LoadPPMFile(&data, &width, &height, &pt, rutaImagen.c_str());
+			if (!ret || width == 0|| height == 0|| pt!=PPM_LOADER_PIXEL_TYPE_GRAY_8B){
+				throw runtime_error("test_load failed");
+			}
+			for (int h = 0; h < height; ++h){
+				for (int w = 0; w < width; ++w){
+						unsigned int pixel = (unsigned int)(data[h*width + w ]);
+						if (h==0 && w==0){
+							outFile<<pixel;
+						}else{ 
+							outFile<<","<<pixel;
+						}
+				}
+			}
+			
+		outFile<<endl;
+	}
+	
+	inFile.close();
+	outFile.close();
+
+	return RutaPruebaFormatoViejo;
+}
+
+
+
+// tp2 -m 1 -i ../tests/train_10_10.csv -q ../tests/test_10_10.csv -o clasif.csv
 
 int main(int argc, char** argv){
 	
@@ -57,12 +167,14 @@ int main(int argc, char** argv){
 	
 	ifstream train_set, test_set, classif;
 	
-	train_set.open(archivo_train_set.c_str());
+	//train_set.open(archivo_train_set.c_str());
+	string RutaEntrenamientoFormatoNuevo= archivo_train_set;
 	
-	imagesToMatrices(TrainImages, TestImages, train_set);
-	
-	//test_set.open(archivo_test_set.c_str());
-	
+	string RutaImgsEntrenamiento = PasarAFormatoViejoEntrenamiento(RutaEntrenamientoFormatoNuevo);
+
+	string RutaPruebaFormatoNuevo= archivo_test_set;
+	 
+	string RutaImgsPrueba = PasarAFormatoViejoPrueba(RutaPruebaFormatoNuevo);
 }
 
 
