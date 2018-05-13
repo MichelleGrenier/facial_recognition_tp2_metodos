@@ -12,7 +12,7 @@
 
 using namespace std;
 
-#define COUT if (0) cout
+#define COUT if (1) cout
 
 ifstream ArchivoEntrada;
 
@@ -20,6 +20,8 @@ ifstream ArchivoEntrenamientoKaggle;
 ifstream ArchivoPruebaKaggle;
 
 typedef vector < vector < double > > matriz; // CAMBIAR A INT ACA Y EN MAIN PARA KNN SIN REDUCCION Y COMENTAR TODO EL CODIGO QUE NO TENGA QUE VER CON EL METODO 0 (FUNCIONA MUCHO MAS RAPIDO), DOUBLE NECESARIO PARA METODOS DE REDUCCION
+
+void escribirMatrizEnConsola(matriz& m);
 
 void imagenes_A_Vectores(matriz& a, matriz& b, ifstream& TestEntrada, int NoHayTest, int o, string RutaImgs) // capaz a "o" la llamaría "indice"
 {
@@ -34,8 +36,8 @@ void imagenes_A_Vectores(matriz& a, matriz& b, ifstream& TestEntrada, int NoHayT
 	int w = 0;
 	int j, h, t;
 	char m;
-	const int CANT_IMGS_ENTRENAMIENTO = 42000; // leí que es buena práctica poner a las constantes en mayúsculas
-	const int CANT_PIXELS_EN_IMG = 784; // 28*28
+	const int CANT_IMGS_ENTRENAMIENTO = 41; // antes (Kaggle digit recognizer): 42000; ahora (ORL faces): 41*10=410
+	const int CANT_PIXELS_EN_IMG = 644; // antes: 28*28=784; ahora: full: 92*112=10304 y reduced: 23*28=644
 
 	while(v < CANT_IMGS_ENTRENAMIENTO) // este número capaz lo haría una constante en vez de hardcodearlo // Una variable decis? Es la idea, pero no se como. // creo que como puse arriba
 	{
@@ -56,7 +58,7 @@ void imagenes_A_Vectores(matriz& a, matriz& b, ifstream& TestEntrada, int NoHayT
 		}
 
 		while(j<785)
-		{	
+		{
 			if(j == 784)
 			{
 				ArchivoEntrada >> h;
@@ -66,7 +68,7 @@ void imagenes_A_Vectores(matriz& a, matriz& b, ifstream& TestEntrada, int NoHayT
 			}
 
 			if(t == 1 || NoHayTest == 1)
-			{			
+			{
 				a[i][j] = h;
 				j++;
 
@@ -74,7 +76,7 @@ void imagenes_A_Vectores(matriz& a, matriz& b, ifstream& TestEntrada, int NoHayT
 			{
 				b[w][j] = h;
 				j++;
-			}		
+			}
 		}
 
 		if(t == 1 || NoHayTest == 1)
@@ -90,10 +92,15 @@ void imagenes_A_Vectores(matriz& a, matriz& b, ifstream& TestEntrada, int NoHayT
 		v++;
 	}
 	//cout << "b[0][0]: " << b[0][0] << endl;
-	//cout << "dimension de b = " << b.size() << " por " << b[0].size() << endl;
-	//cout << "dimension de a = " << a.size() << " por " << a[0].size() << endl;
-     
-	 ArchivoEntrada.close();	 
+
+	escribirMatrizEnConsola(b);
+	escribirMatrizEnConsola(a);
+
+
+	cout << "dimension de b = " << b.size() << " por " << b[0].size() << endl;
+	cout << "dimension de a = " << a.size() << " por " << a[0].size() << endl;
+
+	 ArchivoEntrada.close();
 }
 
 
@@ -186,15 +193,15 @@ vector<pair<int,double> > ordenarPrimeraskDistancias(vector<pair<int,double> >& 
         min = i;
 
         for(j = i + 1; j < distancias.size(); j++)
-        {	
+        {
             if(distancias[min].second > distancias[j].second)
                 min = j;
                 aux[0] = make_pair(distancias[min].first,distancias[min].second);
                 distancias[min] = distancias[j];
                 distancias[j] = aux[0] ;
         }
-        k_vecinos[i] = distancias[i];        
-    }  
+        k_vecinos[i] = distancias[i];
+    }
 
     return k_vecinos;
 }
@@ -237,7 +244,7 @@ int vecinoGanador(vector<pair<int,double> >& k_vecinos, int f)// f es el numero 
 		}
 
 		j++;
-	}	
+	}
 
 	if(mayoriaAbsoluta == sonIguales)
 	{
@@ -278,7 +285,7 @@ vector<int> Knn(matriz& ImagenesEntrenamiento, matriz& ImagenesTest, int k, int 
 	vector<pair<int,double> > k_vecinos;
 	vector<int> respuestas;
 	int f = 0;
-	int i, j; 
+	int i, j;
 	double distanciaImagen, distanciaCoordendas;
 
 	alfaOgamma = alfaOgamma + 1;
@@ -298,7 +305,7 @@ vector<int> Knn(matriz& ImagenesEntrenamiento, matriz& ImagenesTest, int k, int 
 		i = 0;
 
 		while(i < ImagenesEntrenamiento.size())
-		{	
+		{
 			j = 1;
 			distanciaImagen = 0;
 			distanciaCoordendas = 0;
@@ -309,14 +316,14 @@ vector<int> Knn(matriz& ImagenesEntrenamiento, matriz& ImagenesTest, int k, int 
 				distanciaCoordendas = distanciaCoordendas + ((ImagenesEntrenamiento[i][j] - ImagenesTest[f][j])*(ImagenesEntrenamiento[i][j] - ImagenesTest[f][j]));
 				j++;
 			}
-			
+
 			distanciaImagen = sqrt(distanciaCoordendas);
 			distancias[i] = (make_pair(ImagenesEntrenamiento[i][0],distanciaImagen));
 			i++;
 		}
 
 		//cout << "dimension de vector distancias: " << distancias.size() << endl;
-		
+
 		k_vecinos = ordenarPrimeraskDistancias(distancias, k);
 		mostrarVectorOrdenado(k_vecinos); // int=nroReGrande, dist=nan :( => revisar ordenarPrimeraskDistancias
 		respuestas[f] = vecinoGanador(k_vecinos, f);
@@ -325,7 +332,7 @@ vector<int> Knn(matriz& ImagenesEntrenamiento, matriz& ImagenesTest, int k, int 
 		//cout << "respuesta: " << respuestas[f] << endl;
 
 		f++;
-	}	
+	}
 
 	//mostrarVector(respuestas);
 
@@ -389,7 +396,7 @@ float Precision(matriz& ImagenesTest, vector<int>& resultados, int j, FILE* Arch
    			divisor = t+f;
 			//cout << "t " << t << endl;
 			//cout << "f " << f << endl;
-			 
+
 
    			float pre = t/(t+f);
    			//cout << "precison " << pre << endl;
@@ -471,7 +478,7 @@ float Recall(matriz& ImagenesTest, vector<int>& resultados, int j, FILE* Archivo
    			divisor = t+f;
 			//cout << "t " << t << endl;
 			//cout << "f " << f << endl;
-			 
+
 
    			float pre = t/(t+f);
    			//cout << "precison " << pre << endl;
@@ -643,7 +650,7 @@ void centrar(matriz& Imagenes, vector<double>& media, int n)
 		{
 			Imagenes[i][j] = (Imagenes[i][j] - media[j - 1])/(sqrt(n - 1));
 			i++;
-			
+
 		}
 		j++;
 	}
@@ -667,7 +674,7 @@ matriz Trasponer(matriz& a)
 		{
 			Traspuesta[i][j] = a[j][i];
 			j++;
-		}	
+		}
 		i++;
 
 	}
@@ -715,7 +722,7 @@ matriz matrizCovarianza(matriz ImagenesEntrenamiento, vector<double>& media)
 	Traspuesta = Trasponer(matrizX);
 
 	int i = 0;
-	int j; 
+	int j;
 
 	COUT << "CALCULANDO MATRIZ DE COVARIANZAS COORDENADA A COORDENADA" << endl;
 	COUT << endl;
@@ -745,7 +752,7 @@ matriz matrizCovarianza(matriz ImagenesEntrenamiento, vector<double>& media)
 		i++;
 	}
 
-	COUT << endl; 
+	COUT << endl;
 
 	return matrizCovarianza;
 }
@@ -843,7 +850,7 @@ vector<double> normalizoX(vector<double>& x)
 	}
 
 	return x;
-} 
+}
 
 vector<double> metodoDeLaPotencia(matriz& matrizCovarianzas, int alfa, matriz& autovectoresTraspuestos) // devuelve un vector<double> c/los avals. vamos a necesitar los avects también, para hacer el cambio de base de los datos. ¿modifica matrizCovarianzas poniendo avectores en sus cols? -- franco
 {
@@ -865,7 +872,7 @@ vector<double> metodoDeLaPotencia(matriz& matrizCovarianzas, int alfa, matriz& a
 	while(i < alfa)
 	{
 
-		for(int u = 0; u < x.size(); u++) //GENERAR UN VECTOR X DE TAMAÑO MATRIZCOVARIANZAS.SIZE() Y VALORES RANDOM 
+		for(int u = 0; u < x.size(); u++) //GENERAR UN VECTOR X DE TAMAÑO MATRIZCOVARIANZAS.SIZE() Y VALORES RANDOM
 		{
 			x[u] = 0 + rand();
 		}
@@ -875,10 +882,10 @@ vector<double> metodoDeLaPotencia(matriz& matrizCovarianzas, int alfa, matriz& a
 		autovectoresTraspuestos[i].resize(x.size());
 		autovalores[i] = 0;
 		k = 0;
-	
+
 		while(k < infinito)
 		{
-				x = matrizPorVector(matrizCovarianzas, x);  
+				x = matrizPorVector(matrizCovarianzas, x);
 				x = normalizoX(x);
 				k++;
 		}
@@ -889,8 +896,8 @@ vector<double> metodoDeLaPotencia(matriz& matrizCovarianzas, int alfa, matriz& a
 		autovectoresTraspuestos[i] = x;
 		if(alfa > 1)matrizCovarianzas = deflacion(matrizCovarianzas, autovalores[i], autovectoresTraspuestos[i]);
 		i++;
-	}	
-	
+	}
+
 	return autovalores;
 }
 
@@ -915,6 +922,29 @@ vector<double> transformacionCaracteristica(vector<double>& Imagen_i, matriz& au
 	return solucion;
 }
 
+void escribirMatrizEnConsola(matriz& m){
+
+		int i = 0;
+    int j;
+    while( i < m.size() ){
+
+			j = 0;
+			while( j < m[i].size() ){
+
+				if(j == m[i].size() - 1){
+					printf("%.0f", m[i][j]);
+				}else{
+					printf("%.0f,", m[i][j]);
+				}
+
+	    	j++;
+			}
+
+			printf("\n");
+    	i++;
+		}
+}
+
 void escribirMatrizEnArchivo(matriz& m, FILE* archivo){
     int i = 0;
     int j;
@@ -925,15 +955,15 @@ void escribirMatrizEnArchivo(matriz& m, FILE* archivo){
 
     	while(j < m[i].size())
     	{
-  
+
     		if(j == m[i].size() - 1)
     		{
-    			fprintf(archivo, "%.0f", m[i][j]);	
+    			fprintf(archivo, "%.0f", m[i][j]);
     		}else
 			{
 				fprintf(archivo, "%.0f,", m[i][j]);
 			}
-	      
+
 	    	j++;
     	}
 
@@ -1067,4 +1097,3 @@ matriz actualizoMatriz(matriz& a, vector<double>& Ti)
 
 	return a;
 }
-
