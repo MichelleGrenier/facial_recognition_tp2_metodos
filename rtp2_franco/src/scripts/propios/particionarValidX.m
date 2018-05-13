@@ -1,8 +1,6 @@
-function particionarValidX(Kpliegues, rutaArchivoSalida)
+function particionarValidX(Kpliegues, rutaArchivoSalida, cantImgsEntrenamiento)
 
 pkg load statistics		% octave-cli
-
-cantImgsEntrenamiento=42000;
 
 fid=fopen(rutaArchivoSalida,'a');
 

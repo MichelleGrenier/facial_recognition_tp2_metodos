@@ -22,7 +22,7 @@ vector<double> autovalores, media;
 
 string RutaArchivoEntrada = "", RutaArchivoSalida = "", RutaArchivoSalidaReporte = "";
 string RutaImgsEntrenamiento = "", RutaImgsPrueba = "";
-string RutaEntrenamientoFormatoNuevo, RutaPruebaFormatoNuevo;
+string RutaEntrenamientoFormatoNuevo = "", RutaPruebaFormatoNuevo = "";
 string RutaImgs;
  
 ifstream TestEntrada;

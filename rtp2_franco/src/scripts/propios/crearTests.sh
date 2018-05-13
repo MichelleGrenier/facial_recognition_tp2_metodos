@@ -1,6 +1,6 @@
 
-# Uso: ./crearTests l_kVecinos l_alfaDims l_Kpliegues PCA
-# Por ejemplo: ./crearTests "4 5 6" "49 50 51" "9 10 11" 1
+# Uso: ./crearTests l_kVecinos l_alfaDims l_Kpliegues PCA cantImgsEntrenamiento
+# Por ejemplo: ./crearTests "4 5 6" "49 50 51" "9 10 11" 1 42000
 
 rutaDatos='../data/'
 
@@ -24,7 +24,7 @@ for kVecinos in $1; do
 
 				echo "$rutaDatos" $kVecinos $alfaDims $Kpliegues > "$nomArchivo"
 
-				#matlab -nojvm -nodesktop -r "particionarValidX($Kpliegues, '$nomArchivo'); quit;" && reset         # el "reset" es para des-buguear la terminal (Matlab te la buguea)
+				#matlab -nojvm -nodesktop -r "particionarValidX($Kpliegues, '$nomArchivo', $cantImgsEntrenamiento); quit;" && reset         # el "reset" es para des-buguear la terminal (Matlab te la buguea)
 
 				octave-cli --eval "particionarValidX($Kpliegues, '$nomArchivo'); quit;"	# listos o no: migramos a octave. venció la licencia de matlab en la facu
 			done

@@ -12,7 +12,7 @@
 
 using namespace std;
 
-#define COUT if (1) cout
+#define COUT if (1) cout // 0: modo silencioso, 1: modo verborrágico (debug)
 
 ifstream ArchivoEntrada;
 
@@ -59,15 +59,15 @@ void imagenes_A_Vectores(matriz& a, matriz& b, ifstream& TestEntrada, int NoHayT
 	int w = 0;
 	int j, h, t;
 	char m;
-	const int CANT_IMGS_ENTRENAMIENTO = 41; // antes (Kaggle digit recognizer): 42000; ahora (ORL faces): 41*10=410
-	const int CANT_PIXELS_EN_IMG = 644; // antes: 28*28=784; ahora: full: 92*112=10304 y reduced: 23*28=644
+	const int CANT_IMGS_ENTRENAMIENTO = 420; // antes (Kaggle digit recognizer): 42000; ahora (ORL faces): 41*10=410
+	const int CANT_PIXELS_EN_IMG = 784; // antes: 28*28=784; ahora: full: 92*112=10304 y reduced: 23*28=644
 
 	while(v < CANT_IMGS_ENTRENAMIENTO) // este número capaz lo haría una constante en vez de hardcodearlo // Una variable decis? Es la idea, pero no se como. // creo que como puse arriba
 	{
 		j = 0;
 		TestEntrada >> t;
 
-		//cout << "t vale: " << t << endl;
+		COUT << "t vale: " << t << endl;
 
 		if(t == 1 || NoHayTest == 1) // si "NoHayTest" está activado, no se particiona "train"
 		{
@@ -116,12 +116,16 @@ void imagenes_A_Vectores(matriz& a, matriz& b, ifstream& TestEntrada, int NoHayT
 	}
 	//cout << "b[0][0]: " << b[0][0] << endl;
 
+	COUT << "escribiendo matriz b:" << endl;
 	escribirMatrizEnConsola(b);
+	COUT << endl;
+
+	COUT << "escribiendo matriz a:" << endl;
 	escribirMatrizEnConsola(a);
+	COUT << endl;
 
-
-	cout << "dimension de b = " << b.size() << " por " << b[0].size() << endl;
-	cout << "dimension de a = " << a.size() << " por " << a[0].size() << endl;
+	COUT << "dimension de b = " << b.size() << " por " << b[0].size() << endl;
+	COUT << "dimension de a = " << a.size() << " por " << a[0].size() << endl;
 
 	 ArchivoEntrada.close();
 }
@@ -135,9 +139,10 @@ void imagenes_A_Vectores_Kaggle(matriz& m_imgsEntrenamiento, matriz& m_imgsPrueb
         int indice_pruebas = 0;
         int indice_pixeles, pixel;
         char separador; //separa los pixeles con coma
-        const int CANT_IMGS_ENTRENAMIENTO = 42000; // leí que es buena práctica poner a las constantes en mayúsculas
-        const int CANT_IMGS_PRUEBA = 28000;
-        const int CANT_PIXELS_EN_IMG = 784; // 28*28
+	const int CANT_IMGS_ENTRENAMIENTO = 420; // antes (Kaggle digit recognizer): 42000; ahora (ORL faces): 41*10=410
+        const int CANT_IMGS_PRUEBA = 280; // antes (Kaggle digit recognizer): 28000
+	const int CANT_PIXELS_EN_IMG = 784; // antes: 28*28=784; ahora: full: 92*112=10304 y reduced: 23*28=644
+
 
         while(indice_entrenamientos < CANT_IMGS_ENTRENAMIENTO) // este número capaz lo haría una constante en vez de hardcodearlo // Una variable decis? Es la idea, pero no se como. // creo que como puse arriba
         {
@@ -167,7 +172,7 @@ void imagenes_A_Vectores_Kaggle(matriz& m_imgsEntrenamiento, matriz& m_imgsPrueb
 
         while(indice_pruebas < CANT_IMGS_PRUEBA){
 
-		cout << "indice_pruebas: " << indice_pruebas << endl;
+		//COUT << "indice_pruebas: " << indice_pruebas << endl;
 
                 indice_pixeles = 0;
 
@@ -176,7 +181,7 @@ void imagenes_A_Vectores_Kaggle(matriz& m_imgsEntrenamiento, matriz& m_imgsPrueb
 
                 while(indice_pixeles < CANT_PIXELS_EN_IMG){ // acá el +1 mepa que está de más. arriba tmb
 
-			COUT << "indice_pixeles: " << indice_pixeles << endl;
+			// COUT << "indice_pixeles: " << indice_pixeles << endl;
 
                         if(indice_pixeles == CANT_PIXELS_EN_IMG){
 
@@ -283,7 +288,7 @@ void mostrarVectorOrdenado(vector<pair<int,double> >& distancias)
 
 	while(i < distancias.size())
 	{
-		cout << "Vector de distancias[" << i << "] = " << distancias[i].first << " , " << distancias[i].second << endl;
+		COUT << "Vector de distancias[" << i << "] = " << distancias[i].first << " , " << distancias[i].second << endl;
 		i++;
 	}
 }
@@ -320,7 +325,7 @@ vector<int> Knn(matriz& ImagenesEntrenamiento, matriz& ImagenesTest, int k, int 
 	if(metodo == 0)
 	{
 		alfaOgamma = ImagenesTest[0].size();
-		cout << "alfaOgamma met0: " << alfaOgamma << endl;
+		cout << "alfa met0: " << alfaOgamma << endl;
 	}
 
 	while(f < ImagenesTest.size())
@@ -345,14 +350,14 @@ vector<int> Knn(matriz& ImagenesEntrenamiento, matriz& ImagenesTest, int k, int 
 			i++;
 		}
 
-		//cout << "dimension de vector distancias: " << distancias.size() << endl;
+		//COUT << "dimension de vector distancias: " << distancias.size() << endl;
 
 		k_vecinos = ordenarPrimeraskDistancias(distancias, k);
-		mostrarVectorOrdenado(k_vecinos); // int=nroReGrande, dist=nan :( => revisar ordenarPrimeraskDistancias
+		// mostrarVectorOrdenado(k_vecinos); // int=nroReGrande, dist=nan :( => revisar ordenarPrimeraskDistancias
 		respuestas[f] = vecinoGanador(k_vecinos, f);
-		cout << "respuesta[" << f << "] = " << respuestas[f] << endl;
+		COUT << "respuesta[" << f << "] = " << respuestas[f] << endl;
 
-		//cout << "respuesta: " << respuestas[f] << endl;
+		//COUT << "respuesta: " << respuestas[f] << endl;
 
 		f++;
 	}
@@ -947,25 +952,26 @@ vector<double> transformacionCaracteristica(vector<double>& Imagen_i, matriz& au
 
 void escribirMatrizEnConsola(matriz& m){
 
-		int i = 0;
-    int j;
-    while( i < m.size() ){
+	int i = 0;
+	int j;
+	while( i < m.size() ){
 
-			j = 0;
-			while( j < m[i].size() ){
+		j = 0;
+		while( j < m[i].size() ){
 
-				if(j == m[i].size() - 1){
-					printf("%.0f", m[i][j]);
-				}else{
-					printf("%.0f,", m[i][j]);
-				}
-
-	    	j++;
+			if(j == m[i].size() - 1){
+				printf("%.0f", m[i][j]);
+			}else{
+				printf("%.0f,", m[i][j]);
 			}
 
-			printf("\n");
-    	i++;
+		    	j++;
 		}
+
+		cout << endl;
+	    	i++;
+	}
+	cout << endl;
 }
 
 void escribirMatrizEnArchivo(matriz& m, FILE* archivo){
