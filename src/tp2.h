@@ -13,7 +13,7 @@
 #include <sstream>
 #include <string>
 #include <algorithm>
-#include "../../ppmloader/ppmloader.h"
+#include "ppmloader/ppmloader.h"
 
 
 using namespace std;
@@ -22,8 +22,8 @@ using namespace std;
 
 ifstream ArchivoEntrada;
 
-ifstream ArchivoEntrenamientoKaggle;
-ifstream ArchivoPruebaKaggle;
+ifstream ArchivoEntrenamientoSalida;
+ifstream ArchivoPruebaSalida;
 
 typedef vector < vector < double > > matriz; // CAMBIAR A INT ACA Y EN MAIN PARA KNN SIN REDUCCION Y COMENTAR TODO EL CODIGO QUE NO TENGA QUE VER CON EL METODO 0 (FUNCIONA MUCHO MAS RAPIDO), DOUBLE NECESARIO PARA METODOS DE REDUCCION
 
@@ -155,8 +155,8 @@ void imagenes_A_Vectores(matriz& a, matriz& b, ifstream& TestEntrada, int NoHayT
 	int w = 0;
 	int j, h, t;
 	char m;
-	const int CANT_IMGS_ENTRENAMIENTO = 420; // antes (Kaggle digit recognizer): 42000; ahora (ORL faces): 41*10=410
-	const int CANT_PIXELS_EN_IMG = 784; // antes: 28*28=784; ahora: full: 92*112=10304 y reduced: 23*28=644
+	const int CANT_IMGS_ENTRENAMIENTO = 420; // ahora (ORL faces): 41*10=410
+	const int CANT_PIXELS_EN_IMG = 784; //  full: 92*112=10304 y reduced: 23*28=644
 
 	while(v < CANT_IMGS_ENTRENAMIENTO) // este número capaz lo haría una constante en vez de hardcodearlo // Una variable decis? Es la idea, pero no se como. // creo que como puse arriba
 	{
@@ -227,17 +227,17 @@ void imagenes_A_Vectores(matriz& a, matriz& b, ifstream& TestEntrada, int NoHayT
 }
 
 
-void imagenes_A_Vectores_Kaggle(matriz& m_imgsEntrenamiento, matriz& m_imgsPrueba, string RutaImgsEntrenamiento, string RutaImgsPrueba){
-        COUT << "PASANDO IMAGENES A VECTORES KAGGLE" << endl;
+void imagenes_A_Vectores_Salida(matriz& m_imgsEntrenamiento, matriz& m_imgsPrueba, string RutaImgsEntrenamiento, string RutaImgsPrueba){
+        COUT << "PASANDO IMAGENES A VECTORES " << endl;
         COUT << endl;
 
         int indice_entrenamientos = 0;
         int indice_pruebas = 0;
         int indice_pixeles, pixel;
         char separador; //separa los pixeles con coma
-	const int CANT_IMGS_ENTRENAMIENTO = 420; // antes (Kaggle digit recognizer): 42000; ahora (ORL faces): 41*10=410
-        const int CANT_IMGS_PRUEBA = 280; // antes (Kaggle digit recognizer): 28000
-	const int CANT_PIXELS_EN_IMG = 784; // antes: 28*28=784; ahora: full: 92*112=10304 y reduced: 23*28=644
+	const int CANT_IMGS_ENTRENAMIENTO = 420; //  ahora (ORL faces): 41*10=410
+        const int CANT_IMGS_PRUEBA = 280; // 
+	const int CANT_PIXELS_EN_IMG = 784; //  full: 92*112=10304 y reduced: 23*28=644
 
 
         while(indice_entrenamientos < CANT_IMGS_ENTRENAMIENTO) // este número capaz lo haría una constante en vez de hardcodearlo // Una variable decis? Es la idea, pero no se como. // creo que como puse arriba
@@ -250,11 +250,11 @@ void imagenes_A_Vectores_Kaggle(matriz& m_imgsEntrenamiento, matriz& m_imgsPrueb
                 {
                         if(indice_pixeles == CANT_PIXELS_EN_IMG){
 
-                                ArchivoEntrenamientoKaggle >> pixel;
+                                ArchivoEntrenamientoSalida >> pixel;
 
                         } else {
 
-                                ArchivoEntrenamientoKaggle >> pixel >> separador;
+                                ArchivoEntrenamientoSalida >> pixel >> separador;
                         }
 
                         m_imgsEntrenamiento[indice_entrenamientos][indice_pixeles] = pixel;
@@ -264,7 +264,7 @@ void imagenes_A_Vectores_Kaggle(matriz& m_imgsEntrenamiento, matriz& m_imgsPrueb
                 indice_entrenamientos++;
         }
 
-	COUT << "cargado train kaggle" << endl;
+	COUT << "cargado train salida" << endl;
 
         while(indice_pruebas < CANT_IMGS_PRUEBA){
 
@@ -281,11 +281,11 @@ void imagenes_A_Vectores_Kaggle(matriz& m_imgsEntrenamiento, matriz& m_imgsPrueb
 
                         if(indice_pixeles == CANT_PIXELS_EN_IMG){
 
-                                ArchivoPruebaKaggle >> pixel;
+                                ArchivoPruebaSalida >> pixel;
 
                         } else {
 
-                                ArchivoPruebaKaggle >> pixel >> separador;
+                                ArchivoPruebaSalida >> pixel >> separador;
                         }
 
                         m_imgsPrueba[indice_pruebas][indice_pixeles] = pixel;
@@ -295,7 +295,7 @@ void imagenes_A_Vectores_Kaggle(matriz& m_imgsEntrenamiento, matriz& m_imgsPrueb
                 indice_pruebas++;
         }
 
-	COUT << "cargado test kaggle" << endl;
+	COUT << "cargado test salida" << endl;
 
         return;
 }

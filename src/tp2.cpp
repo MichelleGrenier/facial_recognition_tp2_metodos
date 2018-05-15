@@ -13,6 +13,20 @@
 using namespace std;
 
 
+
+/*
+ se compila:  g++ tp2.cpp -o tp2 ppmloader/ppmloader.cpp                                                                         
+ 
+ se corre: 
+ 
+ forma 1:  ./tp -m <method> -i <train_set> -q <test_set> -o <classif>
+ ejemplo:  ./tp -m 0 -i ../data/train.csv -q ../data/test.csv -o salida.csv
+ forma 2 : ./tp <archivo con par├ímetros de entrada> <archivo de salida> <method>
+ ejemplo:  ./tp test1.in test1.out 1  
+
+ forma 3:   python2 metnum.py test   
+ */
+
 typedef vector <vector <double> > matriz;
 matriz ImagenesEntrenamiento, ImagenesTest, matrizCovarianzas, autovectoresTraspuestos, ImagenesEntrenamientoCentradas;
 matriz ImagenesTestCentradas, ImagenesEntrenamientoPLS, ImagenesTestPLS, ImagenesEntrenamientoPCA, ImagenesTestPCA;
@@ -50,7 +64,7 @@ int main(int argc, char** argv){
 		TestEntrada.open(RutaArchivoEntrada.c_str());
 		TestEntrada >> RutaImgs >> k >> alfa >> K;
 
-	} else if (argc == 9) { // para usar el data set de kaggle y sacar el csv para la competencia
+	} else if (argc == 9) { // para usar el data de caras y sacar el csv que pide la catedra
 
 		// estas 2 variables son auxiliares al control del flujo del programa:
 		NoHayTest = 1;
@@ -85,7 +99,7 @@ int main(int argc, char** argv){
                 cout << "<train_set> será el nombre del archivo de entrada con los datos de entrenamiento." << endl;
                 cout << "<test_set> será el nombre del archivo con los datos de test a clasificar" << endl;
                 cout << "<classif> el nombre del archivo de salida con la clasificación de los datos de test de <test_set>" << endl;
-		cout << "Ej.: $ ./tp -m 0 -i ../data/train.csv -q ../data/test.csv -o to_kaggle.csv" << endl << endl;
+		cout << "Ej.: $ ./tp -m 0 -i ../data/train.csv -q ../data/test.csv -o salida.csv" << endl << endl;
 		cout << "O bien así:" << endl;
 		cout << "\t$ ./tp <archivo con parámetros de entrada> <archivo de salida> <method>" << endl;
 		cout << "Ej.: $ ./tp test1.in test1.out 1" << endl;
@@ -199,9 +213,9 @@ int main(int argc, char** argv){
 
 	} // para cada K-pliegue
 
-	if (argc == 9) { // caso kaggle // voy a escribir el .csv
+	if (argc == 9) { // voy a escribir el .csv
 
-		imagenes_A_Vectores_Kaggle(ImagenesEntrenamiento, ImagenesTest, RutaImgsEntrenamiento, RutaImgsPrueba);
+		imagenes_A_Vectores_Salida(ImagenesEntrenamiento, ImagenesTest, RutaImgsEntrenamiento, RutaImgsPrueba);
 
 		if (metodo == 0){
 
@@ -237,7 +251,7 @@ int main(int argc, char** argv){
 				
 			resultados = Knn(ImagenesEntrenamientoPCA, ImagenesTestPCA, k, alfa, metodo);
 
-		} // si kaggle + pca
+		} // si knn + pca
 
 		
 		fprintf(ArchivoSalida, "ImageId,Label\n");
@@ -249,7 +263,7 @@ int main(int argc, char** argv){
 			i++;
 		}
 
-	} // si kaggle 
+	}   
     
 
 	if (argc == 3 || argc == 4) {
