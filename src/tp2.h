@@ -20,6 +20,10 @@ using namespace std;
 
 #define COUT if (1) cout // 0: modo silencioso, 1: modo verborrágico (debug)
 
+int CANT_IMGS_ENTRENAMIENTO = 0; // ahora (ORL faces): 41*10=410
+int CANT_PIXELS_EN_IMG = 0; //  full: 92*112=10304 y reduced: 23*28=644
+int CANT_IMGS_PRUEBA = 0; // 
+
 ifstream ArchivoEntrada;
 
 ifstream ArchivoEntrenamientoSalida;
@@ -51,34 +55,33 @@ string PasarAFormatoViejoEntrenamiento(string RutaEntrenamientoFormatoNuevo){
 	ifstream inFile(infilePath);
 	ofstream outFile;
 	outFile.open(outfilePath);
-	
 		
 	while( getline(inFile, line) ){
 		istringstream linestream(line);
 		string rutaImagen;
 		string idImagen;
-
 		getline(linestream,rutaImagen,',');
 		getline(linestream,idImagen,',');
-		
 		outFile<<idImagen;
-		
-			uchar* data = NULL;
-			int width = 0, height = 0;
-			PPM_LOADER_PIXEL_TYPE pt = PPM_LOADER_PIXEL_TYPE_INVALID;
-
-			bool ret = LoadPPMFile(&data, &width, &height, &pt, rutaImagen.c_str());
-			if (!ret || width == 0|| height == 0|| pt!=PPM_LOADER_PIXEL_TYPE_GRAY_8B){
-				throw runtime_error("test_load failed");
+		uchar* data = NULL;
+		int width = 0, height = 0;
+		PPM_LOADER_PIXEL_TYPE pt = PPM_LOADER_PIXEL_TYPE_INVALID;
+		bool ret = LoadPPMFile(&data, &width, &height, &pt, rutaImagen.c_str());
+		if (!ret || width == 0|| height == 0|| pt!=PPM_LOADER_PIXEL_TYPE_GRAY_8B){
+			throw runtime_error("test_load failed");
+		}
+		for (int h = 0; h < height; ++h){
+			for (int w = 0; w < width; ++w){
+					unsigned int pixel = (unsigned int)(data[h*width + w ]);
+					outFile<<","<<pixel;
 			}
-			for (int h = 0; h < height; ++h){
-				for (int w = 0; w < width; ++w){
-						unsigned int pixel = (unsigned int)(data[h*width + w ]);
-						outFile<<","<<pixel;
-				}
-			}
+		}
+		CANT_IMGS_ENTRENAMIENTO ++;
+		CANT_PIXELS_EN_IMG = height * width;
 		outFile<<endl;
 	}
+	cout<<"cant pixels: "<<CANT_PIXELS_EN_IMG<<endl;
+	cout<<"cant img entrenamiento: "<<CANT_IMGS_ENTRENAMIENTO<<endl;
 	inFile.close();
 	outFile.close();
 	return RutaEntrenamientoFormatoViejo;
@@ -97,43 +100,36 @@ string PasarAFormatoViejoPrueba( string RutaPruebaFormatoNuevo){
 	ifstream inFile(infilePath);
 	ofstream outFile;
 	outFile.open(outfilePath);
-	
 		
 	while( getline(inFile, line) ){
 		istringstream linestream(line);
 		string rutaImagen;
 		string idImagen;
-
 		getline(linestream,rutaImagen,',');
 		getline(linestream,idImagen,',');
-		
-		//outFile<<idImagen;
-		
-			uchar* data = NULL;
-			int width = 0, height = 0;
-			PPM_LOADER_PIXEL_TYPE pt = PPM_LOADER_PIXEL_TYPE_INVALID;
-
-			bool ret = LoadPPMFile(&data, &width, &height, &pt, rutaImagen.c_str());
-			if (!ret || width == 0|| height == 0|| pt!=PPM_LOADER_PIXEL_TYPE_GRAY_8B){
-				throw runtime_error("test_load failed");
+		uchar* data = NULL;
+		int width = 0, height = 0;
+		PPM_LOADER_PIXEL_TYPE pt = PPM_LOADER_PIXEL_TYPE_INVALID;
+		bool ret = LoadPPMFile(&data, &width, &height, &pt, rutaImagen.c_str());
+		if (!ret || width == 0|| height == 0|| pt!=PPM_LOADER_PIXEL_TYPE_GRAY_8B){
+			throw runtime_error("test_load failed");
+		}
+		for (int h = 0; h < height; ++h){
+			for (int w = 0; w < width; ++w){
+					unsigned int pixel = (unsigned int)(data[h*width + w ]);
+					if (h==0 && w==0){
+						outFile<<pixel;
+					}else{ 
+						outFile<<","<<pixel;
+					}
 			}
-			for (int h = 0; h < height; ++h){
-				for (int w = 0; w < width; ++w){
-						unsigned int pixel = (unsigned int)(data[h*width + w ]);
-						if (h==0 && w==0){
-							outFile<<pixel;
-						}else{ 
-							outFile<<","<<pixel;
-						}
-				}
-			}
-			
+		}
+		CANT_IMGS_PRUEBA ++; 
 		outFile<<endl;
 	}
-	
+	cout<<"cant img prueba: "<<CANT_IMGS_PRUEBA<<endl;
 	inFile.close();
 	outFile.close();
-
 	return RutaPruebaFormatoViejo;
 }
 
@@ -144,9 +140,7 @@ string PasarAFormatoViejoPrueba( string RutaPruebaFormatoNuevo){
 
 void imagenes_A_Vectores(matriz& a, matriz& b, ifstream& TestEntrada, int NoHayTest, int o, string RutaImgs) // capaz a "o" la llamaría "indice"
 {
-	COUT << "PASANDO IMAGENES A VECTORES " << o + 1 << endl;
-	COUT << endl;
-
+	COUT << "PASANDO IMAGENES A VECTORES " << o + 1 << endl<<endl;
 	string RutaImgsEntrenamiento;
 	RutaImgsEntrenamiento.append(RutaImgs+"train.csv");
 	ArchivoEntrada.open(RutaImgsEntrenamiento.c_str());
@@ -155,59 +149,44 @@ void imagenes_A_Vectores(matriz& a, matriz& b, ifstream& TestEntrada, int NoHayT
 	int w = 0;
 	int j, h, t;
 	char m;
-	const int CANT_IMGS_ENTRENAMIENTO = 420; // ahora (ORL faces): 41*10=410
-	const int CANT_PIXELS_EN_IMG = 784; //  full: 92*112=10304 y reduced: 23*28=644
 
-	while(v < CANT_IMGS_ENTRENAMIENTO) // este número capaz lo haría una constante en vez de hardcodearlo // Una variable decis? Es la idea, pero no se como. // creo que como puse arriba
-	{
+
+	while(v < CANT_IMGS_ENTRENAMIENTO){ // este número capaz lo haría una constante en vez de hardcodearlo // Una variable decis? Es la idea, pero no se como. // creo que como puse arriba
 		j = 0;
 		TestEntrada >> t;
-
 		COUT << "t vale: " << t << endl;
 
-		if(t == 1 || NoHayTest == 1) // si "NoHayTest" está activado, no se particiona "train"
-		{
+		if(t == 1 || NoHayTest == 1){// si "NoHayTest" está activado, no se particiona "train"
 			a.resize(i + 1);
 			a[i].resize(785);
-
-		}else
-		{
+		}else{
 			b.resize(w + 1);
 			b[w].resize(785);
 		}
 
 		while(j<785)
 		{
-			if(j == 784)
-			{
+			if(j == 784){
 				ArchivoEntrada >> h;
-			}else
-			{
+			}else{
 				ArchivoEntrada >> h >> m;
 			}
 
-			if(t == 1 || NoHayTest == 1)
-			{
+			if(t == 1 || NoHayTest == 1){
 				a[i][j] = h;
 				j++;
 
-			}else
-			{
+			}else{
 				b[w][j] = h;
 				j++;
 			}
 		}
-
-		if(t == 1 || NoHayTest == 1)
-		{
+		if(t == 1 || NoHayTest == 1){
 			i++;
 
-		}else
-		{
-
+		}else{
 			w++;
 		}
-
 		v++;
 	}
 	//cout << "b[0][0]: " << b[0][0] << endl;
@@ -227,77 +206,61 @@ void imagenes_A_Vectores(matriz& a, matriz& b, ifstream& TestEntrada, int NoHayT
 }
 
 
+
 void imagenes_A_Vectores_Salida(matriz& m_imgsEntrenamiento, matriz& m_imgsPrueba, string RutaImgsEntrenamiento, string RutaImgsPrueba){
-        COUT << "PASANDO IMAGENES A VECTORES " << endl;
-        COUT << endl;
+	COUT << "PASANDO IMAGENES A VECTORES " << endl;
+	COUT << endl;
 
-        int indice_entrenamientos = 0;
-        int indice_pruebas = 0;
-        int indice_pixeles, pixel;
-        char separador; //separa los pixeles con coma
-	const int CANT_IMGS_ENTRENAMIENTO = 420; //  ahora (ORL faces): 41*10=410
-        const int CANT_IMGS_PRUEBA = 280; // 
-	const int CANT_PIXELS_EN_IMG = 784; //  full: 92*112=10304 y reduced: 23*28=644
+	int indice_entrenamientos = 0;
+	int indice_pruebas = 0;
+	int indice_pixeles, pixel;
+	char separador; //separa los pixeles con coma
 
 
-        while(indice_entrenamientos < CANT_IMGS_ENTRENAMIENTO) // este número capaz lo haría una constante en vez de hardcodearlo // Una variable decis? Es la idea, pero no se como. // creo que como puse arriba
-        {
-                indice_pixeles = 0;
-                m_imgsEntrenamiento.resize(indice_entrenamientos + 1); //redimensiona a para agregar la imagen de entrenamiento iesima
-                m_imgsEntrenamiento[indice_entrenamientos].resize(CANT_PIXELS_EN_IMG + 1); //la primer coordenada de la imagen es la etiqueta y las restantes 784 son los pixeles
 
-                while(indice_pixeles < CANT_PIXELS_EN_IMG + 1)
-                {
-                        if(indice_pixeles == CANT_PIXELS_EN_IMG){
+	while(indice_entrenamientos < CANT_IMGS_ENTRENAMIENTO) // este número capaz lo haría una constante en vez de hardcodearlo // Una variable decis? Es la idea, pero no se como. // creo que como puse arriba
+	{
+		indice_pixeles = 0;
+		m_imgsEntrenamiento.resize(indice_entrenamientos + 1); //redimensiona a para agregar la imagen de entrenamiento iesima
+		m_imgsEntrenamiento[indice_entrenamientos].resize(CANT_PIXELS_EN_IMG + 1); //la primer coordenada de la imagen es la etiqueta y las restantes 784 son los pixeles
 
-                                ArchivoEntrenamientoSalida >> pixel;
+		while(indice_pixeles < CANT_PIXELS_EN_IMG + 1){
+			
+			if(indice_pixeles == CANT_PIXELS_EN_IMG){
 
-                        } else {
+				ArchivoEntrenamientoSalida >> pixel;
 
-                                ArchivoEntrenamientoSalida >> pixel >> separador;
-                        }
+			} else {
+				ArchivoEntrenamientoSalida >> pixel >> separador;
+			}
 
-                        m_imgsEntrenamiento[indice_entrenamientos][indice_pixeles] = pixel;
-                        indice_pixeles++;
-                }
-
-                indice_entrenamientos++;
-        }
-
+			m_imgsEntrenamiento[indice_entrenamientos][indice_pixeles] = pixel;
+			indice_pixeles++;
+		}
+		indice_entrenamientos++;
+	}
 	COUT << "cargado train salida" << endl;
 
-        while(indice_pruebas < CANT_IMGS_PRUEBA){
-
+	while(indice_pruebas < CANT_IMGS_PRUEBA){
 		//COUT << "indice_pruebas: " << indice_pruebas << endl;
+		indice_pixeles = 0;
+		m_imgsPrueba.resize(indice_pruebas + 1); //redimensiona a para agregar la imagen de entrenamiento iesima
+		m_imgsPrueba[indice_pruebas].resize(CANT_PIXELS_EN_IMG); //la primer coordenada de la imagen es la etiqueta y las restantes 784 son los pixeles
 
-                indice_pixeles = 0;
-
-                m_imgsPrueba.resize(indice_pruebas + 1); //redimensiona a para agregar la imagen de entrenamiento iesima
-                m_imgsPrueba[indice_pruebas].resize(CANT_PIXELS_EN_IMG); //la primer coordenada de la imagen es la etiqueta y las restantes 784 son los pixeles
-
-                while(indice_pixeles < CANT_PIXELS_EN_IMG){ // acá el +1 mepa que está de más. arriba tmb
-
+		while(indice_pixeles < CANT_PIXELS_EN_IMG){ // acá el +1 mepa que está de más. arriba tmb
 			// COUT << "indice_pixeles: " << indice_pixeles << endl;
-
-                        if(indice_pixeles == CANT_PIXELS_EN_IMG){
-
-                                ArchivoPruebaSalida >> pixel;
-
-                        } else {
-
-                                ArchivoPruebaSalida >> pixel >> separador;
-                        }
-
-                        m_imgsPrueba[indice_pruebas][indice_pixeles] = pixel;
-                        indice_pixeles++;
-                }
-
-                indice_pruebas++;
-        }
-
+			if(indice_pixeles == CANT_PIXELS_EN_IMG){
+				ArchivoPruebaSalida >> pixel;
+			} else {
+				ArchivoPruebaSalida >> pixel >> separador;
+			}
+			m_imgsPrueba[indice_pruebas][indice_pixeles] = pixel;
+			indice_pixeles++;
+		}
+		indice_pruebas++;
+	}
 	COUT << "cargado test salida" << endl;
-
-        return;
+    return;
 }
 
 
@@ -312,23 +275,23 @@ vector<pair<int,double> > ordenarPrimeraskDistancias(vector<pair<int,double> >& 
 	k_vecinos.resize(k);
 	aux.resize(1);
 
-    for(i = 0; i < k; i++)
-    {
+    for(i = 0; i < k; i++){
         min = i;
 
-        for(j = i + 1; j < distancias.size(); j++)
-        {
-            if(distancias[min].second > distancias[j].second)
+        for(j = i + 1; j < distancias.size(); j++){
+            if(distancias[min].second > distancias[j].second) {
                 min = j;
                 aux[0] = make_pair(distancias[min].first,distancias[min].second);
                 distancias[min] = distancias[j];
                 distancias[j] = aux[0] ;
+            }
         }
         k_vecinos[i] = distancias[i];
     }
-
     return k_vecinos;
 }
+
+
 
 int vecinoGanador(vector<pair<int,double> >& k_vecinos, int f)// f es el numero de imagen
 {
@@ -339,8 +302,8 @@ int vecinoGanador(vector<pair<int,double> >& k_vecinos, int f)// f es el numero 
 	int mayoriaAbsoluta = 1;
 	int respuesta = -1;
 
-	while(j < k_vecinos.size())
-	{
+	while(j < k_vecinos.size()){
+		
 		i = j + 1;
 		cantRepeticiones = 1;
 

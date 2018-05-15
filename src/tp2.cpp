@@ -133,7 +133,7 @@ int main(int argc, char** argv){
 
 	for(int i = 0; i < K; i++){
 
-                imagenes_A_Vectores(ImagenesEntrenamiento, ImagenesTest, TestEntrada, NoHayTest, i, RutaImgs);
+        imagenes_A_Vectores(ImagenesEntrenamiento, ImagenesTest, TestEntrada, NoHayTest, i, RutaImgs);
 
 		if(metodo == 0){
 

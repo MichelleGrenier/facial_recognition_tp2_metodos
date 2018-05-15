@@ -29,7 +29,7 @@ int main(int argc, char** argv) {
 	
 	
 	ostringstream filename;
-    filename << "../tests/train_set_smin"<< sujeto_min << "_smax" << sujeto_max << "_fotomin" << foto_min << "_fotomax" << foto_max << ".csv";
+    filename << "train_set_smin"<< sujeto_min << "_smax" << sujeto_max << "_fotomin" << foto_min << "_fotomax" << foto_max << ".csv";
     ofstream outputFile;
     outputFile.open(filename.str());	
 	for(int i = sujeto_min; i <= sujeto_max; i++) {
