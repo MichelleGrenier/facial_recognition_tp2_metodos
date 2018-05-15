@@ -307,64 +307,54 @@ int vecinoGanador(vector<pair<int,double> >& k_vecinos, int f)// f es el numero 
 		i = j + 1;
 		cantRepeticiones = 1;
 
-		while(i < k_vecinos.size())
-		{
-			if(k_vecinos[j].first == k_vecinos[i].first)
-			{
+		while(i < k_vecinos.size()){
+			if(k_vecinos[j].first == k_vecinos[i].first){
 				cantRepeticiones++;
 			}
-
 			i++;
 		}
-
-		if(cantRepeticiones > mayoriaAbsoluta)
-		{
+		if(cantRepeticiones > mayoriaAbsoluta){
 			mayoriaAbsoluta = cantRepeticiones;
 			respuesta = k_vecinos[j].first;
-
-		}else
-		{
-			if(cantRepeticiones == mayoriaAbsoluta)
-			{
+		}else{
+			if(cantRepeticiones == mayoriaAbsoluta){
 				sonIguales = mayoriaAbsoluta;
 			}
 		}
-
 		j++;
 	}
-
-	if(mayoriaAbsoluta == sonIguales)
-	{
+	if(mayoriaAbsoluta == sonIguales){
 		COUT << "NO HAY VECINO DOMINANTE PARA LA IMAGEN NUMERO " << f << endl;
 	}
-
 	return respuesta;
 }
 
-void mostrarVectorOrdenado(vector<pair<int,double> >& distancias)
-{
-	int i = 0;
 
-	while(i < distancias.size())
-	{
+
+
+void mostrarVectorOrdenado(vector<pair<int,double> >& distancias){
+	int i = 0;
+	while(i < distancias.size()){
 		COUT << "Vector de distancias[" << i << "] = " << distancias[i].first << " , " << distancias[i].second << endl;
 		i++;
 	}
 }
 
-void mostrarVector(vector<double>& a)
-{
-	int i = 0;
 
-	while(i < a.size())
-	{
+/*
+
+void mostrarVector(vector<double>& a){
+	int i = 0;
+	while(i < a.size()){
 		cout << "vector[" << i << "] = " << a[i] << endl;
 		i++;
 	}
 }
+*/
 
-vector<int> Knn(matriz& ImagenesEntrenamiento, matriz& ImagenesTest, int k, int alfaOgamma, int metodo)
-{
+
+
+vector<int> Knn(matriz& ImagenesEntrenamiento, matriz& ImagenesTest, int k, int alfaOgamma, int metodo){
 	COUT << "REALIZANDO Knn " << endl;
 	COUT << endl;
 
@@ -381,213 +371,170 @@ vector<int> Knn(matriz& ImagenesEntrenamiento, matriz& ImagenesTest, int k, int 
 	distancias.resize(ImagenesEntrenamiento.size());
 	cout << "tamaño imagenes entrenamiento: " << ImagenesEntrenamiento.size() << endl;
 
-	if(metodo == 0)
-	{
+	if(metodo == 0){
 		alfaOgamma = ImagenesTest[0].size();
 		cout << "alfa met0: " << alfaOgamma << endl;
 	}
-
-	while(f < ImagenesTest.size())
-	{
+	while(f < ImagenesTest.size()){
 		i = 0;
-
-		while(i < ImagenesEntrenamiento.size())
-		{
+		while(i < ImagenesEntrenamiento.size()){
 			j = 1;
 			distanciaImagen = 0;
 			distanciaCoordendas = 0;
-
-			while(j < alfaOgamma)
-			{
+			while(j < alfaOgamma){
 				//cout << "i vale: " << i << " , j vale: " << j << " , f vale: " << f << endl;
 				distanciaCoordendas = distanciaCoordendas + ((ImagenesEntrenamiento[i][j] - ImagenesTest[f][j])*(ImagenesEntrenamiento[i][j] - ImagenesTest[f][j]));
 				j++;
 			}
-
 			distanciaImagen = sqrt(distanciaCoordendas);
 			distancias[i] = (make_pair(ImagenesEntrenamiento[i][0],distanciaImagen));
 			i++;
 		}
-
 		//COUT << "dimension de vector distancias: " << distancias.size() << endl;
 
 		k_vecinos = ordenarPrimeraskDistancias(distancias, k);
 		// mostrarVectorOrdenado(k_vecinos); // int=nroReGrande, dist=nan :( => revisar ordenarPrimeraskDistancias
 		respuestas[f] = vecinoGanador(k_vecinos, f);
 		COUT << "respuesta[" << f << "] = " << respuestas[f] << endl;
-
-		//COUT << "respuesta: " << respuestas[f] << endl;
-
 		f++;
 	}
-
 	//mostrarVector(respuestas);
-
 	return respuestas;
 }
 
-float Precision(matriz& ImagenesTest, vector<int>& resultados, int j, FILE* ArchivoSalidaReporte)
-{
+
+
+
+float Precision(matriz& ImagenesTest, vector<int>& resultados, int j, FILE* ArchivoSalidaReporte){
 
 	float precision = 0;
 	int i = 0;
     vector<float> tpi;
-    for (int h=0; h<10; ++h)
-   	{
-    		tpi.push_back(0.0);
+    for (int h=0; h<10; ++h){
+    	tpi.push_back(0.0);
     }
     vector<float> fpi;
-    for (int k=0; k<10; ++k)
-   	{
-    		fpi.push_back(0.0);
+    for (int k=0; k<10; ++k){
+    	fpi.push_back(0.0);
     }
     vector<float> precClases;
-    for (int k=0; k<10; ++k)
-   	{
-    		precClases.push_back(0.0);
+    for (int k=0; k<10; ++k){
+    	precClases.push_back(0.0);
     }
-	//cout << endl;
-	//cout << "TEST " << j+1 << endl;
 
-
-
-	while(i < resultados.size())
-	{
-		 for (int m=0; m<10; ++m)
-   		{
-	    	if( m == resultados[i] )
-			{
-				if (ImagenesTest[i][0] == m)
-				{
+	while(i < resultados.size()){
+		 for (int m=0; m<10; ++m){
+	    	if( m == resultados[i] ){
+				if (ImagenesTest[i][0] == m){
 					//cout << "ENTRA A TPI " << endl;
 					tpi[m] = tpi[m] + 1.0;
-
-				}
-				else
-				{
+				}else{
 					//cout << "ENTRA A FPI " << endl;
 					fpi[m] = fpi[m] + 1.0;
 				}
 			}
     	}
-
 		i++;
 	}
 	float divisor;
-	for (int i=0; i<10; ++i)
-   	{
-   			//cout << "FPI " << fpi[i] << endl;
-   			//cout << "TPI " << tpi[i] << endl;
-   			float t = tpi[i];
-   			float f = fpi[i];
-   			divisor = t+f;
-			//cout << "t " << t << endl;
-			//cout << "f " << f << endl;
+	for (int i=0; i<10; ++i){
+		//cout << "FPI " << fpi[i] << endl;
+		//cout << "TPI " << tpi[i] << endl;
+		float t = tpi[i];
+		float f = fpi[i];
+		divisor = t+f;
+		//cout << "t " << t << endl;
+		//cout << "f " << f << endl;
 
 
-   			float pre = t/(t+f);
-   			//cout << "precison " << pre << endl;
+		float pre = t/(t+f);
+		//cout << "precison " << pre << endl;
 
-   			divisor = tpi[i]+fpi[i];
-   			//cout << "DIVISOR " << divisor << endl;
+		divisor = tpi[i]+fpi[i];
+		//cout << "DIVISOR " << divisor << endl;
 
-    		precClases[i] = pre;
-    		//cout << "prec clase i " << precClases[i] << endl;
-    		fprintf(ArchivoSalidaReporte, "Precision clase %d :  %4.6f\n", i, precClases[i]);
-    		//cout << "Precision clase  " << i << " :" << precClases[i] << endl;
+		precClases[i] = pre;
+		//cout << "prec clase i " << precClases[i] << endl;
+		fprintf(ArchivoSalidaReporte, "Precision clase %d :  %4.6f\n", i, precClases[i]);
+		//cout << "Precision clase  " << i << " :" << precClases[i] << endl;
     }
-    for (int i=0; i<10; ++i)
-   	{
-    		precision = precision + precClases[i];
+    for (int i=0; i<10; ++i){
+    	precision = precision + precClases[i];
     }
     precision = precision/10;
-
-
-
 	return precision;
 }
-float Recall(matriz& ImagenesTest, vector<int>& resultados, int j, FILE* ArchivoSalidaReporte)
-{
+
+
+
+
+
+float Recall(matriz& ImagenesTest, vector<int>& resultados, int j, FILE* ArchivoSalidaReporte){
 
 	float recall = 0;
 	int i = 0;
     vector<float> tpi;
-    for (int h=0; h<10; ++h)
-   	{
-    		tpi.push_back(0.0);
+    for (int h=0; h<10; ++h){
+    	tpi.push_back(0.0);
     }
     vector<float> fni;
-    for (int k=0; k<10; ++k)
-   	{
-    		fni.push_back(0.0);
+    for (int k=0; k<10; ++k){
+    	fni.push_back(0.0);
     }
     vector<float> recallClases;
-    for (int k=0; k<10; ++k)
-   	{
-    		recallClases.push_back(0.0);
+    for (int k=0; k<10; ++k){
+    	recallClases.push_back(0.0);
     }
 	//cout << endl;
 	//cout << "TEST " << j+1 << endl;
 
-
-
-	while(i < resultados.size())
-	{
-		 for (int m=0; m<10; ++m)
-   		{
-	    	if( m == resultados[i] )
-			{
-				if (ImagenesTest[i][0] == m)
-				{
+	while(i < resultados.size()){
+		 for (int m=0; m<10; ++m){
+	    	if( m == resultados[i] ){
+				if (ImagenesTest[i][0] == m){
 					//cout << "ENTRA A TPI " << endl;
 					tpi[m] = tpi[m] + 1.0;
-
 				}
-
 			}
 			if ((ImagenesTest[i][0] == m && ImagenesTest[i][0] != resultados[i] ))
 			{
 				fni[m] = fni[m] + 1.0;
 			}
-
     	}
-
-
 		i++;
 	}
 	float divisor;
-	for (int i=0; i<10; ++i)
-   	{
-   			//cout << "FNI " << fni[i] << endl;
-   			//cout << "TPI " << tpi[i] << endl;
-   			float t = tpi[i];
-   			float f = fni[i];
-   			divisor = t+f;
-			//cout << "t " << t << endl;
-			//cout << "f " << f << endl;
+	for (int i=0; i<10; ++i){
+		//cout << "FNI " << fni[i] << endl;
+		//cout << "TPI " << tpi[i] << endl;
+		float t = tpi[i];
+		float f = fni[i];
+		divisor = t+f;
+		//cout << "t " << t << endl;
+		//cout << "f " << f << endl;
 
 
-   			float pre = t/(t+f);
-   			//cout << "precison " << pre << endl;
+		float pre = t/(t+f);
+		//cout << "precison " << pre << endl;
 
-   			divisor = tpi[i]+fni[i];
-   			//cout << "DIVISOR " << divisor << endl;
+		divisor = tpi[i]+fni[i];
+		//cout << "DIVISOR " << divisor << endl;
 
-    		recallClases[i] = pre;
-    		//cout << "recall clase i " << recallClases[i] << endl;
-    		fprintf(ArchivoSalidaReporte, "Recall clase %d :  %4.6f\n", i, recallClases[i]);
-    		//cout << "Recall clase  " << i << " :" << recallClases[i] << endl;
+		recallClases[i] = pre;
+		//cout << "recall clase i " << recallClases[i] << endl;
+		fprintf(ArchivoSalidaReporte, "Recall clase %d :  %4.6f\n", i, recallClases[i]);
+		//cout << "Recall clase  " << i << " :" << recallClases[i] << endl;
     }
-    for (int i=0; i<10; ++i)
-   	{
-    		recall = recall + recallClases[i];
+    for (int i=0; i<10; ++i){
+    	recall = recall + recallClases[i];
     }
     recall = recall/10;
-
-
-
 	return recall;
 }
+
+
+
+
 float resultadosCorrectos(matriz& ImagenesTest, vector<int>& resultados, int j, FILE* ArchivoSalidaReporte)
 {
 	float resultadosCorrectos = 0;
@@ -616,8 +563,7 @@ float resultadosCorrectos(matriz& ImagenesTest, vector<int>& resultados, int j, 
 		i++;
 	}
 
-	if(!(resultadosIncorrectos + resultadosCorrectos == resultados.size()))
-	{
+	if(!(resultadosIncorrectos + resultadosCorrectos == resultados.size())){
 		cout << "ALGO ANDA MAL" << endl;
 	}
 
@@ -672,6 +618,10 @@ vector <double> calculoVectorMedias(matriz& ImagenesEntrenamiento)
 	return media;
 }
 
+
+
+
+
 matriz armarMatrizX(matriz& Imagenes, vector<double>& media, int n)// n es la cantidad de imagenes de entrenamiento
 {
 	matriz b;
@@ -704,6 +654,10 @@ matriz armarMatrizX(matriz& Imagenes, vector<double>& media, int n)// n es la ca
 	return b;
 }
 
+
+
+
+
 matriz armarMatrizY(matriz& Imagenes, vector<double>& media, int n)// n es la cantidad de imagenes de entrenamiento
 {
 	int i = 0;
@@ -725,6 +679,10 @@ matriz armarMatrizY(matriz& Imagenes, vector<double>& media, int n)// n es la ca
 	return Imagenes;
 }
 
+
+
+
+
 void centrar(matriz& Imagenes, vector<double>& media, int n)
 {
 	int i = 0;
@@ -742,6 +700,10 @@ void centrar(matriz& Imagenes, vector<double>& media, int n)
 		j++;
 	}
 }
+
+
+
+
 
 matriz Trasponer(matriz& a)
 {
@@ -770,6 +732,11 @@ matriz Trasponer(matriz& a)
 	return Traspuesta;
 }
 
+
+
+
+
+
 vector<double> matrizPorVector(matriz& A, vector<double>& x)
 {
 	vector<double> solucion;
@@ -793,6 +760,10 @@ vector<double> matrizPorVector(matriz& A, vector<double>& x)
 
 	return solucion;
 }
+
+
+
+
 
 matriz matrizCovarianza(matriz ImagenesEntrenamiento, vector<double>& media)
 {
@@ -844,6 +815,10 @@ matriz matrizCovarianza(matriz ImagenesEntrenamiento, vector<double>& media)
 	return matrizCovarianza;
 }
 
+
+
+
+
 void testCovarianzaSimetrica(matriz& a) // por qué "a" y no "m"? :P
 {
 	cout << "TESTEANDO SIMETRIA DE MATRIZ DE COVARIANZAS" << endl << endl;
@@ -886,6 +861,11 @@ void testCovarianzaSimetrica(matriz& a) // por qué "a" y no "m"? :P
 	cout << endl;
 }
 
+
+
+
+
+
 double norma(vector <double>& a)
 {
 	double norma_a = 0;
@@ -901,6 +881,10 @@ double norma(vector <double>& a)
 
 	return norma_a;
 }
+
+
+
+
 
 matriz deflacion(matriz& matrizCovarianzas, double& autovalor, vector<double>& autovector)
 {
@@ -923,6 +907,10 @@ matriz deflacion(matriz& matrizCovarianzas, double& autovalor, vector<double>& a
 	return matrizCovarianzas;
 }
 
+
+
+
+
 vector<double> normalizoX(vector<double>& x)
 {
 	int i = 0;
@@ -938,6 +926,10 @@ vector<double> normalizoX(vector<double>& x)
 
 	return x;
 }
+
+
+
+
 
 vector<double> metodoDeLaPotencia(matriz& matrizCovarianzas, int alfa, matriz& autovectoresTraspuestos) // devuelve un vector<double> c/los avals. vamos a necesitar los avects también, para hacer el cambio de base de los datos. ¿modifica matrizCovarianzas poniendo avectores en sus cols? -- franco
 {
@@ -988,6 +980,10 @@ vector<double> metodoDeLaPotencia(matriz& matrizCovarianzas, int alfa, matriz& a
 	return autovalores;
 }
 
+
+
+
+
 vector<double> transformacionCaracteristica(vector<double>& Imagen_i, matriz& autovectoresTraspuestos)
 {
 	vector<double> solucion;
@@ -1008,6 +1004,10 @@ vector<double> transformacionCaracteristica(vector<double>& Imagen_i, matriz& au
 	}
 	return solucion;
 }
+
+
+
+
 
 void escribirMatrizEnConsola(matriz& m){
 
@@ -1032,6 +1032,10 @@ void escribirMatrizEnConsola(matriz& m){
 	}
 	cout << endl;
 }
+
+
+
+
 
 void escribirMatrizEnArchivo(matriz& m, FILE* archivo){
     int i = 0;
@@ -1059,6 +1063,10 @@ void escribirMatrizEnArchivo(matriz& m, FILE* archivo){
     	i++;
     }
 }
+
+
+
+
 
 matriz generarMatrizPreY(matriz& ImagenesEntrenamiento){
 
@@ -1090,6 +1098,10 @@ matriz generarMatrizPreY(matriz& ImagenesEntrenamiento){
 
 	return PreY;
 }
+
+
+
+
 
 void generarMatriz_Mi(matriz& matrizX, matriz& matrizY, matriz& matriz_Mi)
 {
@@ -1160,6 +1172,10 @@ void generarMatriz_Mi(matriz& matrizX, matriz& matrizY, matriz& matriz_Mi)
 	matriz_Mi = Trasponer(matriz_Mi);*/
 
 }
+
+
+
+
 
 matriz actualizoMatriz(matriz& a, vector<double>& Ti)
 {
