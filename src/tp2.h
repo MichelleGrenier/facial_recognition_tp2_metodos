@@ -22,7 +22,8 @@ using namespace std;
 
 int CANT_IMGS_ENTRENAMIENTO = 0; // ahora (ORL faces): 41*10=410
 int CANT_PIXELS_EN_IMG = 0; //  full: 92*112=10304 y reduced: 23*28=644
-int CANT_IMGS_PRUEBA = 0; // 
+int CANT_IMGS_PRUEBA = 0; 
+int CANT_CLASES = 41; 
 
 ifstream ArchivoEntrada;
 
@@ -79,6 +80,12 @@ string PasarAFormatoViejoEntrenamiento(string RutaEntrenamientoFormatoNuevo){
 		CANT_IMGS_ENTRENAMIENTO ++;
 		CANT_PIXELS_EN_IMG = height * width;
 		outFile<<endl;
+		
+/*		char comments[100];
+		sprintf(comments, "%s", "Hello world");
+		cout<<rutaImagen+"probando"<<endl;
+		bool ret2 = SavePPMFile((rutaImagen+"probando").c_str(),data,width,height,PPM_LOADER_PIXEL_TYPE_RGB_8B, comments);
+*/		
 	}
 	cout<<"cant pixels: "<<CANT_PIXELS_EN_IMG<<endl;
 	cout<<"cant img entrenamiento: "<<CANT_IMGS_ENTRENAMIENTO<<endl;
@@ -138,11 +145,13 @@ string PasarAFormatoViejoPrueba( string RutaPruebaFormatoNuevo){
 
 
 
-void imagenes_A_Vectores(matriz& a, matriz& b, ifstream& TestEntrada, int NoHayTest, int o, string RutaImgs) // capaz a "o" la llamaría "indice"
+void imagenes_A_Vectores(matriz& a, matriz& b, ifstream& TestEntrada, int NoHayTest, int o, string RutaImgsEntrenamiento) // capaz a "o" la llamaría "indice"
 {
 	COUT << "PASANDO IMAGENES A VECTORES " << o + 1 << endl<<endl;
-	string RutaImgsEntrenamiento;
-	RutaImgsEntrenamiento.append(RutaImgs+"train.csv");
+//	string RutaImgsEntrenamiento;
+//	RutaImgsEntrenamiento.append(RutaImgs+"train.csv");
+	
+	
 	ArchivoEntrada.open(RutaImgsEntrenamiento.c_str());
 	int v = 0;
 	int i = 0;
@@ -154,19 +163,19 @@ void imagenes_A_Vectores(matriz& a, matriz& b, ifstream& TestEntrada, int NoHayT
 	while(v < CANT_IMGS_ENTRENAMIENTO){ // este número capaz lo haría una constante en vez de hardcodearlo // Una variable decis? Es la idea, pero no se como. // creo que como puse arriba
 		j = 0;
 		TestEntrada >> t;
-		COUT << "t vale: " << t << endl;
+		//COUT << "t vale: " << t << endl;
 
 		if(t == 1 || NoHayTest == 1){// si "NoHayTest" está activado, no se particiona "train"
 			a.resize(i + 1);
-			a[i].resize(785);
+			a[i].resize(CANT_PIXELS_EN_IMG + 1);
 		}else{
 			b.resize(w + 1);
-			b[w].resize(785);
+			b[w].resize(CANT_PIXELS_EN_IMG + 1);
 		}
 
-		while(j<785)
+		while(j<CANT_PIXELS_EN_IMG + 1)
 		{
-			if(j == 784){
+			if(j == CANT_PIXELS_EN_IMG ){
 				ArchivoEntrada >> h;
 			}else{
 				ArchivoEntrada >> h >> m;
@@ -341,7 +350,7 @@ void mostrarVectorOrdenado(vector<pair<int,double> >& distancias){
 }
 
 
-/*
+
 
 void mostrarVector(vector<double>& a){
 	int i = 0;
@@ -350,7 +359,7 @@ void mostrarVector(vector<double>& a){
 		i++;
 	}
 }
-*/
+
 
 
 
@@ -410,20 +419,20 @@ float Precision(matriz& ImagenesTest, vector<int>& resultados, int j, FILE* Arch
 	float precision = 0;
 	int i = 0;
     vector<float> tpi;
-    for (int h=0; h<10; ++h){
+    for (int h=0; h<CANT_CLASES; ++h){
     	tpi.push_back(0.0);
     }
     vector<float> fpi;
-    for (int k=0; k<10; ++k){
+    for (int k=0; k<CANT_CLASES; ++k){
     	fpi.push_back(0.0);
     }
     vector<float> precClases;
-    for (int k=0; k<10; ++k){
+    for (int k=0; k<CANT_CLASES; ++k){
     	precClases.push_back(0.0);
     }
 
 	while(i < resultados.size()){
-		 for (int m=0; m<10; ++m){
+		 for (int m=0; m<CANT_CLASES; ++m){
 	    	if( m == resultados[i] ){
 				if (ImagenesTest[i][0] == m){
 					//cout << "ENTRA A TPI " << endl;
@@ -437,7 +446,7 @@ float Precision(matriz& ImagenesTest, vector<int>& resultados, int j, FILE* Arch
 		i++;
 	}
 	float divisor;
-	for (int i=0; i<10; ++i){
+	for (int i=0; i<CANT_CLASES; ++i){
 		//cout << "FPI " << fpi[i] << endl;
 		//cout << "TPI " << tpi[i] << endl;
 		float t = tpi[i];
@@ -458,10 +467,10 @@ float Precision(matriz& ImagenesTest, vector<int>& resultados, int j, FILE* Arch
 		fprintf(ArchivoSalidaReporte, "Precision clase %d :  %4.6f\n", i, precClases[i]);
 		//cout << "Precision clase  " << i << " :" << precClases[i] << endl;
     }
-    for (int i=0; i<10; ++i){
+    for (int i=0; i<CANT_CLASES; ++i){
     	precision = precision + precClases[i];
     }
-    precision = precision/10;
+    precision = precision/CANT_CLASES;
 	return precision;
 }
 
@@ -474,22 +483,22 @@ float Recall(matriz& ImagenesTest, vector<int>& resultados, int j, FILE* Archivo
 	float recall = 0;
 	int i = 0;
     vector<float> tpi;
-    for (int h=0; h<10; ++h){
+    for (int h=0; h<CANT_CLASES; ++h){
     	tpi.push_back(0.0);
     }
     vector<float> fni;
-    for (int k=0; k<10; ++k){
+    for (int k=0; k<CANT_CLASES; ++k){
     	fni.push_back(0.0);
     }
     vector<float> recallClases;
-    for (int k=0; k<10; ++k){
+    for (int k=0; k<CANT_CLASES; ++k){
     	recallClases.push_back(0.0);
     }
 	//cout << endl;
 	//cout << "TEST " << j+1 << endl;
 
 	while(i < resultados.size()){
-		 for (int m=0; m<10; ++m){
+		 for (int m=0; m<CANT_CLASES; ++m){
 	    	if( m == resultados[i] ){
 				if (ImagenesTest[i][0] == m){
 					//cout << "ENTRA A TPI " << endl;
@@ -504,7 +513,7 @@ float Recall(matriz& ImagenesTest, vector<int>& resultados, int j, FILE* Archivo
 		i++;
 	}
 	float divisor;
-	for (int i=0; i<10; ++i){
+	for (int i=0; i<CANT_CLASES; ++i){
 		//cout << "FNI " << fni[i] << endl;
 		//cout << "TPI " << tpi[i] << endl;
 		float t = tpi[i];
@@ -525,10 +534,10 @@ float Recall(matriz& ImagenesTest, vector<int>& resultados, int j, FILE* Archivo
 		fprintf(ArchivoSalidaReporte, "Recall clase %d :  %4.6f\n", i, recallClases[i]);
 		//cout << "Recall clase  " << i << " :" << recallClases[i] << endl;
     }
-    for (int i=0; i<10; ++i){
+    for (int i=0; i<CANT_CLASES; ++i){
     	recall = recall + recallClases[i];
     }
-    recall = recall/10;
+    recall = recall/CANT_CLASES;
 	return recall;
 }
 
@@ -792,7 +801,7 @@ matriz matrizCovarianza(matriz ImagenesEntrenamiento, vector<double>& media)
 		matrizCovarianza[i].resize(Traspuesta.size());
 		matrizCovarianza[i] = matrizPorVector(Traspuesta, Traspuesta[i]);
 		i++;
-		COUT << i << " de 784 vectores terminados" << endl;
+		COUT << i << " de"<< CANT_PIXELS_EN_IMG	<<" vectores terminados" << endl;
 	}
 
 	i = 0;
@@ -1076,10 +1085,10 @@ matriz generarMatrizPreY(matriz& ImagenesEntrenamiento){
 	int j;
 	while(i < PreY.size())
 	{
-		PreY[i].resize(10);
+		PreY[i].resize(CANT_CLASES);
 		j = 0;
 
-		while(j < 10)
+		while(j < CANT_CLASES)
 		{
 			if (ImagenesEntrenamiento[i][0] == j)
 			{

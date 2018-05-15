@@ -25,7 +25,7 @@ for kVecinos in $1; do
 				echo "$rutaDatos" $kVecinos $alfaDims $Kpliegues > "$nomArchivo"
 
 				matlab -nojvm -nodesktop -r "particionarValidX($Kpliegues, '$nomArchivo', $5); quit;" && reset         # el "reset" es para des-buguear la terminal (Matlab te la buguea)
-				sleep 100
+				sleep 50
 				#octave-cli --eval "particionarValidX($Kpliegues, '$nomArchivo', $5); quit;"	# listos o no: migramos a octave. venció la licencia de matlab en la facu
 			done
 		done

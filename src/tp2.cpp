@@ -63,7 +63,8 @@ int main(int argc, char** argv){
 
 		TestEntrada.open(RutaArchivoEntrada.c_str());
 		TestEntrada >> RutaImgs >> k >> alfa >> K;
-
+		RutaImgs = PasarAFormatoViejoEntrenamiento(RutaImgs);
+		
 	} else if (argc == 9) { // para usar el data de caras y sacar el csv que pide la catedra
 
 		// estas 2 variables son auxiliares al control del flujo del programa:
