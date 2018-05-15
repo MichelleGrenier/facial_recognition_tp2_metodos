@@ -21,7 +21,7 @@ using namespace std;
  
  forma 1:  ./tp -m <method> -i <train_set> -q <test_set> -o <classif>
  ejemplo:  ./tp -m 0 -i ../data/train.csv -q ../data/test.csv -o salida.csv
- forma 2 : ./tp <archivo con par├ímetros de entrada> <archivo de salida> <method>
+ forma 2 : ./tp <archivo con parametros de entrada> <archivo de salida> <method>
  ejemplo:  ./tp test1.in test1.out 1  
 
  forma 3:   python2 metnum.py test   
