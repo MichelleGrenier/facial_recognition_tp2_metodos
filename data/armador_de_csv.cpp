@@ -36,7 +36,7 @@ int main(int argc, char** argv) {
 		
 		for(int j = foto_min; j <= foto_max; j++) {
 		
-			outputFile << "../ImagenesCarasRed/s"<< i << "/" << j << ".pgm, " << i<< "," << endl ;	
+			outputFile << "../data/reduced/s"<< i << "/" << j << ".pgm, " << i<< "," << endl ;	
 		
 		}
     }
