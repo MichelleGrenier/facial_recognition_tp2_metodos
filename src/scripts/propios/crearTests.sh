@@ -1,8 +1,8 @@
 
-# Uso: ./crearTests l_kVecinos l_alfaDims l_Kpliegues PCA cantImgsEntrenamiento
-# Por ejemplo: ./crearTests "4 5 6" "49 50 51" "9 10 11" 1 42000
+# Uso: ./crearTests l_kVecinos l_alfaDims l_Kpliegues PCA cantImgsEntrenamiento rutaDatos
+# Por ejemplo: ./crearTests "4 5 6" "49 50 51" "9 10 11" 1 42000 ../data/train.csv
 
-rutaDatos='../data/'
+rutaDatos="$6"
 
 nomCarpetaNuevosTests='tests_recien_creados'
 
