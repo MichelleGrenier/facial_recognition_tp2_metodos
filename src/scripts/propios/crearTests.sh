@@ -59,3 +59,6 @@ for kVecinos in $1; do
 
 done
 
+cp tests_recien_creados/k? ../../../tests/parametros/
+rm -r tests_recien_creados
+
