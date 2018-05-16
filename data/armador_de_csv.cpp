@@ -26,18 +26,14 @@ int main(int argc, char** argv) {
 	int foto_min = atoi(argv[3]);
 	int foto_max = atoi(argv[4]);
 	
-	
-	
 	ostringstream filename;
     filename << "train_set_smin"<< sujeto_min << "_smax" << sujeto_max << "_fotomin" << foto_min << "_fotomax" << foto_max << ".csv";
     ofstream outputFile;
-    outputFile.open(filename.str());	
+    outputFile.open(filename.str());
+		
 	for(int i = sujeto_min; i <= sujeto_max; i++) {
-		
-		for(int j = foto_min; j <= foto_max; j++) {
-		
-			outputFile << "../data/reduced/s"<< i << "/" << j << ".pgm, " << i<< "," << endl ;	
-		
+		for(int j = foto_min; j <= foto_max; j++) {	
+			outputFile << "../data/full/s"<< i << "/" << j << ".pgm, " << i<< "," << endl ;			
 		}
     }
 	outputFile.close();
