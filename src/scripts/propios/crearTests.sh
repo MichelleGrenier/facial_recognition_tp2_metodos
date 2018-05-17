@@ -37,7 +37,7 @@ for kVecinos in $1; do
 					sleep 50
 				else
 					octave-cli --eval "particionarValidX($Kpliegues, '$nomArchivo', $5); quit;"
-				fi && \
+				fi
 			done
 		done
 	done
