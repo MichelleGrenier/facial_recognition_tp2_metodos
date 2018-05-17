@@ -1,16 +1,21 @@
 
-# Uso: ./crearTests l_kVecinos l_alfaDims l_Kpliegues PCA cantImgsEntrenamiento rutaDatos
-# Por ejemplo: ./crearTests 3 15 10 0 410 ../data/train.csv
+# Uso: ./crearTests l_kVecinos l_alfaDims l_Kpliegues PCA cantImgsEntrenamiento rutaDatos usarMatlab
+# Por ejemplo: ./crearTests 3 15 10 0 410 ../data/train.csv 0
+
+if [ "$#" -ne 7 ]; then
+
+	echo "Cantidad de parámetros incorrecta.														" >&2
+	echo "Uso: ./crearTests\t	l_kVecinos\t	l_alfaDims\t	l_Kpliegues\t	PCA\t	cantImgsEntrenamiento\t	rutaDatos\t\t		usarMatlab	" >&2
+	echo "Ej.: ./crearTests\t	3\t		15\t		10\t		0\t	410\t\t\t		../data/train.csv\t	0		" >&2
+	exit 1
+fi
 
 rutaDatos="$6"
 
 nomCarpetaNuevosTests='tests_recien_creados'
 
-echo "hago una carpeta para los tests"
-mkdir "$nomCarpetaNuevosTests" && \
-echo "hecha la carpeta"
+mkdir "$nomCarpetaNuevosTests"
 
-echo "armo los tests"
 for kVecinos in $1; do
 
 	for alfaDims in $2; do
@@ -27,17 +32,18 @@ for kVecinos in $1; do
 
 				echo "$rutaDatos" $kVecinos $alfaDims $Kpliegues > "$nomArchivo"
 
-				matlab -nojvm -nodesktop -r "particionarValidX($Kpliegues, '$nomArchivo', $5); quit;" && reset         # el "reset" es para des-buguear la terminal (Matlab te la buguea)
-				sleep 50
-				#octave-cli --eval "particionarValidX($Kpliegues, '$nomArchivo', $5); quit;"	# listos o no: migramos a octave. venció la licencia de matlab en la facu
+				if [[ $7 == 1 ]]; then
+					matlab -nojvm -nodesktop -r "particionarValidX($Kpliegues, '$nomArchivo', $5); quit;" && reset         # el "reset" es para des-buguear la terminal (Matlab te la buguea)
+					sleep 50
+				else
+					octave-cli --eval "particionarValidX($Kpliegues, '$nomArchivo', $5); quit;"
+				fi && \
 			done
 		done
 	done
-done && \
-echo "listos los tests"
+done
 
 # ordenar
-echo "ordeno los tests"
 cd $nomCarpetaNuevosTests
 
 for kVecinos in $1; do
@@ -61,14 +67,11 @@ for kVecinos in $1; do
 
         done
 
-done && \
-echo "ordenados los tests"
+done
 
-echo "copio la carpeta tests_recien_creados a tests/parametros"
-cp tests_recien_creados ../../../tests/parametros/ && \
-echo "lista la copia"
+# copio la carpeta tests_recien_creados a tests/parametros
+cp tests_recien_creados ../../../tests/parametros/
 
-#echo "borro la carpeta tests_recien_creados original"
-#rm -r tests_recien_creados && \
-#echo "borrada la carpeta original"
+# borro la carpeta tests_recien_creados original
+#rm -r tests_recien_creados
 
