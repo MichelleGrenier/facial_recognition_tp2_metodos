@@ -4,9 +4,9 @@
 
 if [ "$#" -ne 7 ]; then
 
-	echo 	"Cantidad de parámetros incorrecta.													" >&2
+	echo 	"Cantidad de parámetros incorrecta.														" >&2
 	echo 	"Uso: ./crearTests	l_kVecinos	l_alfaDims	l_Kpliegues	PCA	cantImgsEntrenamiento	rutaDatos		usarMatlab	" >&2
-	echo -e "Ej.: ./crearTests	"2 3 4"		"14 15 16"	"9 10 11"\t	0	410			../data/train.csv	0		" >&2
+	echo -e "Ej.: ./crearTests	\"2 3 4\"\t	\"14 15 16\"	\"9 10 11\"	0	410			../data/train.csv	0	" >&2
 	exit 1
 fi
 
