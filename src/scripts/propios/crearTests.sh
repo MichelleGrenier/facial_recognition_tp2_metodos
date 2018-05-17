@@ -6,8 +6,11 @@ rutaDatos="$6"
 
 nomCarpetaNuevosTests='tests_recien_creados'
 
-mkdir "$nomCarpetaNuevosTests"
+echo "hago una carpeta para los tests"
+mkdir "$nomCarpetaNuevosTests" && \
+echo "hecha la carpeta"
 
+echo "armo los tests"
 for kVecinos in $1; do
 
 	for alfaDims in $2; do
@@ -30,10 +33,11 @@ for kVecinos in $1; do
 			done
 		done
 	done
-done
+done && \
+echo "listos los tests"
 
 # ordenar
-
+echo "ordeno los tests"
 cd $nomCarpetaNuevosTests
 
 for kVecinos in $1; do
@@ -57,8 +61,14 @@ for kVecinos in $1; do
 
         done
 
-done
+done && \
+echo "ordenados los tests"
 
-cp tests_recien_creados/k? ../../../tests/parametros/
-rm -r tests_recien_creados
+echo "copio la carpeta tests_recien_creados a tests/parametros"
+cp tests_recien_creados ../../../tests/parametros/ && \
+echo "lista la copia"
+
+#echo "borro la carpeta tests_recien_creados original"
+#rm -r tests_recien_creados && \
+#echo "borrada la carpeta original"
 
