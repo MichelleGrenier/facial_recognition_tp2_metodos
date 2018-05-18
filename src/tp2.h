@@ -20,8 +20,8 @@ using namespace std;
 
 #define COUT if (1) cout // 0: modo silencioso, 1: modo verborrágico (debug)
 
-int CANT_IMGS_ENTRENAMIENTO = 0; // ahora (ORL faces): 41*10=410
-int CANT_PIXELS_EN_IMG = 0; //  full: 92*112=10304 y reduced: 23*28=644
+int CANT_IMGS_ENTRENAMIENTO = 0; // maximo: 41*10 = 410
+int CANT_PIXELS_EN_IMG = 0; //  _full: 92*112 = 10304     _reduced: 23*28 = 644
 int CANT_IMGS_PRUEBA = 0; 
 int CANT_CLASES = 41; 
 
@@ -34,6 +34,7 @@ typedef vector < vector < double > > matriz; // CAMBIAR A INT ACA Y EN MAIN PARA
 
 
 void escribirMatrizEnConsola(matriz& m);
+
 
 
 
@@ -55,8 +56,7 @@ string PasarAFormatoViejoEntrenamiento(string RutaEntrenamientoFormatoNuevo){
 	string line;
 	ifstream inFile(infilePath);
 	ofstream outFile;
-	outFile.open(outfilePath);
-		
+	outFile.open(outfilePath);	
 	while( getline(inFile, line) ){
 		istringstream linestream(line);
 		string rutaImagen;
@@ -73,12 +73,13 @@ string PasarAFormatoViejoEntrenamiento(string RutaEntrenamientoFormatoNuevo){
 		}
 		for (int h = 0; h < height; ++h){
 			for (int w = 0; w < width; ++w){
-					unsigned int pixel = (unsigned int)(data[h*width + w ]);
-					outFile<<","<<pixel;
+				unsigned int pixel = (unsigned int)(data[h*width + w ]);
+				outFile<<","<<pixel;
 			}
 		}
 		CANT_IMGS_ENTRENAMIENTO ++;
 		CANT_PIXELS_EN_IMG = height * width;
+<<<<<<< HEAD
 		outFile<<endl;
 		
 		char comments[100];
@@ -86,6 +87,9 @@ string PasarAFormatoViejoEntrenamiento(string RutaEntrenamientoFormatoNuevo){
 		cout<<rutaImagen+"probando"<<endl;
 		bool ret2 = SavePPMFile((rutaImagen+"probando").c_str(),data,width,height,PPM_LOADER_PIXEL_TYPE_GRAY_8B, comments);
 		
+=======
+		outFile<<endl;	
+>>>>>>> b95091fb954c28952fd35ef553939c2225ce8fcc
 	}
 	cout<<"cant pixels: "<<CANT_PIXELS_EN_IMG<<endl;
 	cout<<"cant img entrenamiento: "<<CANT_IMGS_ENTRENAMIENTO<<endl;
@@ -93,6 +97,7 @@ string PasarAFormatoViejoEntrenamiento(string RutaEntrenamientoFormatoNuevo){
 	outFile.close();
 	return RutaEntrenamientoFormatoViejo;
 }
+
 
 
 
@@ -106,8 +111,7 @@ string PasarAFormatoViejoPrueba( string RutaPruebaFormatoNuevo){
 	string line;
 	ifstream inFile(infilePath);
 	ofstream outFile;
-	outFile.open(outfilePath);
-		
+	outFile.open(outfilePath);	
 	while( getline(inFile, line) ){
 		istringstream linestream(line);
 		string rutaImagen;
@@ -123,12 +127,12 @@ string PasarAFormatoViejoPrueba( string RutaPruebaFormatoNuevo){
 		}
 		for (int h = 0; h < height; ++h){
 			for (int w = 0; w < width; ++w){
-					unsigned int pixel = (unsigned int)(data[h*width + w ]);
-					if (h==0 && w==0){
-						outFile<<pixel;
-					}else{ 
-						outFile<<","<<pixel;
-					}
+				unsigned int pixel = (unsigned int)(data[h*width + w ]);
+				if (h==0 && w==0){
+					outFile<<pixel;
+				}else{ 
+					outFile<<","<<pixel;
+				}
 			}
 		}
 		CANT_IMGS_PRUEBA ++; 
@@ -148,10 +152,6 @@ string PasarAFormatoViejoPrueba( string RutaPruebaFormatoNuevo){
 void imagenes_A_Vectores(matriz& a, matriz& b, ifstream& TestEntrada, int NoHayTest, int o, string RutaImgsEntrenamiento) // capaz a "o" la llamaría "indice"
 {
 	COUT << "PASANDO IMAGENES A VECTORES " << o + 1 << endl<<endl;
-//	string RutaImgsEntrenamiento;
-//	RutaImgsEntrenamiento.append(RutaImgs+"train.csv");
-	
-	
 	ArchivoEntrada.open(RutaImgsEntrenamiento.c_str());
 	int v = 0;
 	int i = 0;
@@ -159,12 +159,9 @@ void imagenes_A_Vectores(matriz& a, matriz& b, ifstream& TestEntrada, int NoHayT
 	int j, h, t;
 	char m;
 
-
-	while(v < CANT_IMGS_ENTRENAMIENTO){ // este número capaz lo haría una constante en vez de hardcodearlo // Una variable decis? Es la idea, pero no se como. // creo que como puse arriba
-		j = 0;
+	while(v < CANT_IMGS_ENTRENAMIENTO){ 
 		TestEntrada >> t;
-		//COUT << "t vale: " << t << endl;
-
+		j = 0;
 		if(t == 1 || NoHayTest == 1){// si "NoHayTest" está activado, no se particiona "train"
 			a.resize(i + 1);
 			a[i].resize(CANT_PIXELS_EN_IMG + 1);
@@ -180,11 +177,9 @@ void imagenes_A_Vectores(matriz& a, matriz& b, ifstream& TestEntrada, int NoHayT
 			}else{
 				ArchivoEntrada >> h >> m;
 			}
-
 			if(t == 1 || NoHayTest == 1){
 				a[i][j] = h;
 				j++;
-
 			}else{
 				b[w][j] = h;
 				j++;
@@ -192,26 +187,23 @@ void imagenes_A_Vectores(matriz& a, matriz& b, ifstream& TestEntrada, int NoHayT
 		}
 		if(t == 1 || NoHayTest == 1){
 			i++;
-
 		}else{
 			w++;
 		}
 		v++;
 	}
-	//cout << "b[0][0]: " << b[0][0] << endl;
 
-	COUT << "escribiendo matriz b:" << endl;
+/*	COUT << "escribiendo matriz b:" << endl;
 	escribirMatrizEnConsola(b);
 	COUT << endl;
 
 	COUT << "escribiendo matriz a:" << endl;
 	escribirMatrizEnConsola(a);
 	COUT << endl;
-
+*/
 	COUT << "dimension de b = " << b.size() << " por " << b[0].size() << endl;
 	COUT << "dimension de a = " << a.size() << " por " << a[0].size() << endl;
-
-	 ArchivoEntrada.close();
+	ArchivoEntrada.close();
 }
 
 
@@ -219,43 +211,32 @@ void imagenes_A_Vectores(matriz& a, matriz& b, ifstream& TestEntrada, int NoHayT
 void imagenes_A_Vectores_Salida(matriz& m_imgsEntrenamiento, matriz& m_imgsPrueba, string RutaImgsEntrenamiento, string RutaImgsPrueba){
 	COUT << "PASANDO IMAGENES A VECTORES " << endl;
 	COUT << endl;
-
 	int indice_entrenamientos = 0;
 	int indice_pruebas = 0;
 	int indice_pixeles, pixel;
 	char separador; //separa los pixeles con coma
-
-
-
 	while(indice_entrenamientos < CANT_IMGS_ENTRENAMIENTO) // este número capaz lo haría una constante en vez de hardcodearlo // Una variable decis? Es la idea, pero no se como. // creo que como puse arriba
 	{
 		indice_pixeles = 0;
 		m_imgsEntrenamiento.resize(indice_entrenamientos + 1); //redimensiona a para agregar la imagen de entrenamiento iesima
 		m_imgsEntrenamiento[indice_entrenamientos].resize(CANT_PIXELS_EN_IMG + 1); //la primer coordenada de la imagen es la etiqueta y las restantes 784 son los pixeles
-
-		while(indice_pixeles < CANT_PIXELS_EN_IMG + 1){
-			
+		while(indice_pixeles < CANT_PIXELS_EN_IMG + 1){	
 			if(indice_pixeles == CANT_PIXELS_EN_IMG){
-
 				ArchivoEntrenamientoSalida >> pixel;
-
 			} else {
 				ArchivoEntrenamientoSalida >> pixel >> separador;
 			}
-
 			m_imgsEntrenamiento[indice_entrenamientos][indice_pixeles] = pixel;
 			indice_pixeles++;
 		}
 		indice_entrenamientos++;
 	}
 	COUT << "cargado train salida" << endl;
-
 	while(indice_pruebas < CANT_IMGS_PRUEBA){
 		//COUT << "indice_pruebas: " << indice_pruebas << endl;
 		indice_pixeles = 0;
 		m_imgsPrueba.resize(indice_pruebas + 1); //redimensiona a para agregar la imagen de entrenamiento iesima
 		m_imgsPrueba[indice_pruebas].resize(CANT_PIXELS_EN_IMG); //la primer coordenada de la imagen es la etiqueta y las restantes 784 son los pixeles
-
 		while(indice_pixeles < CANT_PIXELS_EN_IMG){ // acá el +1 mepa que está de más. arriba tmb
 			// COUT << "indice_pixeles: " << indice_pixeles << endl;
 			if(indice_pixeles == CANT_PIXELS_EN_IMG){
@@ -278,16 +259,14 @@ void imagenes_A_Vectores_Salida(matriz& m_imgsEntrenamiento, matriz& m_imgsPrueb
 vector<pair<int,double> > ordenarPrimeraskDistancias(vector<pair<int,double> >& distancias, int k)
 {
 	vector<pair<int,double> > k_vecinos;
-	int min,j;
-	vector<pair<int,double> > aux;
-	int i;
 	k_vecinos.resize(k);
+	vector<pair<int,double> > aux;
 	aux.resize(1);
+	int min;	
 
-    for(i = 0; i < k; i++){
+    for(int i = 0; i < k; i++){
         min = i;
-
-        for(j = i + 1; j < distancias.size(); j++){
+        for(int j = i + 1; j < distancias.size(); j++){
             if(distancias[min].second > distancias[j].second) {
                 min = j;
                 aux[0] = make_pair(distancias[min].first,distancias[min].second);
@@ -333,7 +312,8 @@ int vecinoGanador(vector<pair<int,double> >& k_vecinos, int f)// f es el numero 
 		j++;
 	}
 	if(mayoriaAbsoluta == sonIguales){
-		COUT << "NO HAY VECINO DOMINANTE PARA LA IMAGEN NUMERO " << f << endl;
+		/*COUT << "NO HAY VECINO DOMINANTE PARA LA IMAGEN NUMERO " << f << endl;*/
+		respuesta = k_vecinos[0].first;
 	}
 	return respuesta;
 }
@@ -363,7 +343,7 @@ void mostrarVector(vector<double>& a){
 
 
 
-vector<int> Knn(matriz& ImagenesEntrenamiento, matriz& ImagenesTest, int k, int alfaOgamma, int metodo){
+vector<int> Knn(matriz& ImagenesEntrenamiento, matriz& ImagenesTest, int k, int alfa, int metodo){
 	COUT << "REALIZANDO Knn " << endl;
 	COUT << endl;
 
@@ -374,15 +354,15 @@ vector<int> Knn(matriz& ImagenesEntrenamiento, matriz& ImagenesTest, int k, int 
 	int i, j;
 	double distanciaImagen, distanciaCoordendas;
 
-	alfaOgamma = alfaOgamma + 1;
+	alfa = alfa + 1; 
 
 	respuestas.resize(ImagenesTest.size());
 	distancias.resize(ImagenesEntrenamiento.size());
 	cout << "tamaño imagenes entrenamiento: " << ImagenesEntrenamiento.size() << endl;
 
 	if(metodo == 0){
-		alfaOgamma = ImagenesTest[0].size();
-		cout << "alfa met0: " << alfaOgamma << endl;
+		alfa = ImagenesTest[0].size();	// si solo hacemos Knn no reducimos dimensiones
+		cout << "alfa met0: " << alfa << endl;
 	}
 	while(f < ImagenesTest.size()){
 		i = 0;
@@ -390,13 +370,13 @@ vector<int> Knn(matriz& ImagenesEntrenamiento, matriz& ImagenesTest, int k, int 
 			j = 1;
 			distanciaImagen = 0;
 			distanciaCoordendas = 0;
-			while(j < alfaOgamma){
+			while(j < alfa){
 				//cout << "i vale: " << i << " , j vale: " << j << " , f vale: " << f << endl;
 				distanciaCoordendas = distanciaCoordendas + ((ImagenesEntrenamiento[i][j] - ImagenesTest[f][j])*(ImagenesEntrenamiento[i][j] - ImagenesTest[f][j]));
 				j++;
 			}
 			distanciaImagen = sqrt(distanciaCoordendas);
-			distancias[i] = (make_pair(ImagenesEntrenamiento[i][0],distanciaImagen));
+			distancias[i] = (make_pair(ImagenesEntrenamiento[i][0],distanciaImagen)); // par(id_sujeto, distancia)
 			i++;
 		}
 		//COUT << "dimension de vector distancias: " << distancias.size() << endl;

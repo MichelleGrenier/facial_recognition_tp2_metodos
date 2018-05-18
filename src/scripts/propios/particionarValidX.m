@@ -1,17 +1,23 @@
 function particionarValidX(Kpliegues, rutaArchivoSalida, cantImgsEntrenamiento)
 
-%pkg load statistics		% octave-cli
+	isOctave = exist('OCTAVE_VERSION', 'builtin') ~= 0;
 
-fid=fopen(rutaArchivoSalida,'a');
+	if (isOctave)
+		pkg load statistics
+	end
 
-c = cvpartition(cantImgsEntrenamiento,'kfold',Kpliegues);
+	fid=fopen(rutaArchivoSalida,'a');
 
-for i = 1:Kpliegues
-	a = training(c,i);
-	b(i,:) = a';
+	c = cvpartition(cantImgsEntrenamiento,'kfold',Kpliegues);
+
+	for i = 1:Kpliegues
+		a = training(c,i);
+		b(i,:) = a';
+	end
+
+	dlmwrite(rutaArchivoSalida, b, '-append', 'delimiter', ' ');
+
+	fclose(fid);
+
 end
-
-dlmwrite(rutaArchivoSalida, b, '-append', 'delimiter', ' ');
-
-fclose(fid);
 

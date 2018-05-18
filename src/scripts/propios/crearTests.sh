@@ -1,6 +1,14 @@
 
-# Uso: ./crearTests l_kVecinos l_alfaDims l_Kpliegues PCA cantImgsEntrenamiento rutaDatos
-# Por ejemplo: ./crearTests 3 15 10 0 410 ../data/train.csv
+# Uso: ./crearTests l_kVecinos l_alfaDims l_Kpliegues PCA cantImgsEntrenamiento rutaDatos usarMatlab
+# Por ejemplo: ./crearTests 3 15 10 0 410 ../data/train.csv 0
+
+if [ "$#" -ne 7 ]; then
+
+	echo 	"Cantidad de parámetros incorrecta.														" >&2
+	echo 	"Uso: ./crearTests	l_kVecinos	l_alfaDims	l_Kpliegues	PCA	cantImgsEntrenamiento	rutaDatos		usarMatlab	" >&2
+	echo -e "Ej.: ./crearTests	\"2 3 4\"\t	\"14 15 16\"	\"9 10 11\"	0	410			../data/train.csv	0	" >&2
+	exit 1
+fi
 
 rutaDatos="$6"
 
@@ -24,16 +32,18 @@ for kVecinos in $1; do
 
 				echo "$rutaDatos" $kVecinos $alfaDims $Kpliegues > "$nomArchivo"
 
-				matlab -nojvm -nodesktop -r "particionarValidX($Kpliegues, '$nomArchivo', $5); quit;" && reset         # el "reset" es para des-buguear la terminal (Matlab te la buguea)
-				sleep 50
-				#octave-cli --eval "particionarValidX($Kpliegues, '$nomArchivo', $5); quit;"	# listos o no: migramos a octave. venció la licencia de matlab en la facu
+				if [[ $7 == 1 ]]; then
+					matlab -nojvm -nodesktop -r "particionarValidX($Kpliegues, '$nomArchivo', $5); quit;" && reset         # el "reset" es para des-buguear la terminal (Matlab te la buguea)
+					sleep 50
+				else
+					octave-cli --eval "particionarValidX($Kpliegues, '$nomArchivo', $5); quit;"
+				fi
 			done
 		done
 	done
 done
 
 # ordenar
-
 cd $nomCarpetaNuevosTests
 
 for kVecinos in $1; do
@@ -58,4 +68,10 @@ for kVecinos in $1; do
         done
 
 done
+
+# copio la carpeta tests_recien_creados a tests/parametros
+cp tests_recien_creados ../../../tests/parametros/
+
+# borro la carpeta tests_recien_creados original
+#rm -r tests_recien_creados
 
