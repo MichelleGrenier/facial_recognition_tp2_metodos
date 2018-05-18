@@ -82,11 +82,6 @@ string PasarAFormatoViejoEntrenamiento(string RutaEntrenamientoFormatoNuevo){
 
 		outFile<<endl;
 		
-		char comments[100];
-		sprintf(comments, "%s", "Hello world");
-		cout<<rutaImagen+"probando"<<endl;
-		bool ret2 = SavePPMFile((rutaImagen+"probando").c_str(),data,width,height,PPM_LOADER_PIXEL_TYPE_GRAY_8B, comments);
-		
 	}
 	cout<<"cant pixels: "<<CANT_PIXELS_EN_IMG<<endl;
 	cout<<"cant img entrenamiento: "<<CANT_IMGS_ENTRENAMIENTO<<endl;
