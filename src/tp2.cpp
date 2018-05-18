@@ -15,18 +15,21 @@ using namespace std;
 
 
 /*
- se compila:  g++ tp2.cpp -o tp2 ppmloader/ppmloader.cpp                                                                         
-  
+ se compila:
+
+	forma 1: g++ -Wall -Wextra -pedantic tp2.cpp -o tp2 ppmloader/ppmloader.cpp
+	forma 2: python2 metnum.py build
+
  se corre: 
- 
- forma 1:  ./tp2 -m <method> -i <train_set> -q <test_set> -o <classif>
- ejemplo:  ./tp2 -m 0 -i ../data/train.csv -q ../data/test.csv -o salida.csv
 
- forma 2 : ./tp2 <archivo con parametros de entrada> <archivo de salida> <method>
- ejemplo:  ./tp2 ../tests/parametros/test_k3a15K10-1.in ../tests/parametros/test_k3a15K10-1.out 0
- ejemplo:  ./tp2 test1.in test1.out 1  
+	 forma 1:  ./tp2 -m <method> -i <train_set> -q <test_set> -o <classif>
+	 ejemplo:  ./tp2 -m 0 -i ../data/train.csv -q ../data/test.csv -o salida.csv
 
- forma 3:   python2 metnum.py test   
+	 forma 2 : ./tp2 <archivo con parametros de entrada> <archivo de salida> <method>
+	 ejemplo:  ./tp2 ../tests/parametros/test_k3a15K10-1.in ../tests/parametros/test_k3a15K10-1.out 0
+	 ejemplo:  ./tp2 test1.in test1.out 1
+
+	 forma 3:   python2 metnum.py test
  */
 
 typedef vector <vector <double> > matriz;
