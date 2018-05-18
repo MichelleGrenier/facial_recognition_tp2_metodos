@@ -21,6 +21,7 @@ using namespace std;
  
  forma 1:  ./tp2 -m <method> -i <train_set> -q <test_set> -o <classif>
  ejemplo:  ./tp2 -m 0 -i ../data/train.csv -q ../data/test.csv -o salida.csv
+
  forma 2 : ./tp2 <archivo con parametros de entrada> <archivo de salida> <method>
  ejemplo:  ./tp2 ../tests/parametros/test_k3a15K10-1.in ../tests/parametros/test_k3a15K10-1.out 0
  ejemplo:  ./tp2 test1.in test1.out 1  
@@ -63,6 +64,7 @@ int main(int argc, char** argv){
 		TestEntrada >> RutaImgs >> k >> alfa >> K;
 		RutaImgs = PasarAFormatoViejoEntrenamiento(RutaImgs);	
 	}else if (argc == 9) { 		// para usar el data de caras y sacar el csv que pide la catedra
+		cout<< "* leo entrada argc 9"<< endl;
 		// estas 2 variables son auxiliares al control del flujo del programa:
 		NoHayTest = 1;
 		K = 0;
@@ -77,8 +79,9 @@ int main(int argc, char** argv){
 		assert( strcmp(argv[7], "-o") == 0 );
 		RutaArchivoSalida = argv[8];
 		// los parámetros para la salida:
-		k = 3;
+		k = 41;
 		alfa = 15;
+		cout<< "* fin leo entrada argc 9"<< endl;
 	}else{ // instrucciones de uso
 		cout << endl << "Cantidad de argumentos pasados incorrecta." << endl << endl;
 		cout << "Uso:" << endl;
@@ -118,7 +121,7 @@ int main(int argc, char** argv){
 
 
 	for(int i = 0; i < K; i++){ // para cada K-pliegue
-	
+		cout<< "* Pliegues entrada argc 9"<< endl;
         imagenes_A_Vectores(ImagenesEntrenamiento, ImagenesTest, TestEntrada, NoHayTest, i, RutaImgs);
 		
 		if(metodo == 0){
@@ -180,11 +183,12 @@ int main(int argc, char** argv){
 				}
 			}
 		} // si metodo es 1 (PCA)
-
+	cout<< "* Fin pliegues entrada argc 9"<< endl;
 	} // para cada K-pliegue
 
 	// escribimos el .csv segun el modo con el que se corrio el programa
-	if (argc == 9) { 
+	if (argc == 9) {
+		cout<< "* Calculos argc 9"<< endl;
 		imagenes_A_Vectores_Salida(ImagenesEntrenamiento, ImagenesTest, RutaImgsEntrenamiento, RutaImgsPrueba);
 		if (metodo == 0){
 			resultados = Knn(ImagenesEntrenamiento, ImagenesTest, k, alfa, metodo);
@@ -216,6 +220,7 @@ int main(int argc, char** argv){
 			fprintf(ArchivoSalida, "%d,%d\n", i+1, resultados[i]);
 			i++;
 		}
+		cout<< "* Fin calculos argc 9"<< endl;
 	}   
 	if (argc == 3 || argc == 4) {
 		fprintf(ArchivoSalidaReporte, "***RESULTADOS***\n");
@@ -235,6 +240,8 @@ int main(int argc, char** argv){
 	
 	fclose(ArchivoSalidaReporte);
 	fclose(ArchivoSalida);
+	
+	
 	return 0;
 }
 

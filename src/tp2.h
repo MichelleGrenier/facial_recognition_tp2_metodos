@@ -26,16 +26,15 @@ int CANT_IMGS_PRUEBA = 0;
 int CANT_CLASES = 41; 
 
 ifstream ArchivoEntrada;
-
 ifstream ArchivoEntrenamientoSalida;
 ifstream ArchivoPruebaSalida;
 
 typedef vector < vector < double > > matriz; // CAMBIAR A INT ACA Y EN MAIN PARA KNN SIN REDUCCION Y COMENTAR TODO EL CODIGO QUE NO TENGA QUE VER CON EL METODO 0 (FUNCIONA MUCHO MAS RAPIDO), DOUBLE NECESARIO PARA METODOS DE REDUCCION
 
 
+
+
 void escribirMatrizEnConsola(matriz& m);
-
-
 
 
 bool replace(string& str, const string& from, const string& to) {
@@ -83,8 +82,8 @@ string PasarAFormatoViejoEntrenamiento(string RutaEntrenamientoFormatoNuevo){
 		outFile<<endl;
 		
 	}
-	cout<<"cant pixels: "<<CANT_PIXELS_EN_IMG<<endl;
-	cout<<"cant img entrenamiento: "<<CANT_IMGS_ENTRENAMIENTO<<endl;
+	//cout<<"cant pixels: "<<CANT_PIXELS_EN_IMG<<endl;
+	//cout<<"cant img entrenamiento: "<<CANT_IMGS_ENTRENAMIENTO<<endl;
 	inFile.close();
 	outFile.close();
 	return RutaEntrenamientoFormatoViejo;
@@ -130,7 +129,7 @@ string PasarAFormatoViejoPrueba( string RutaPruebaFormatoNuevo){
 		CANT_IMGS_PRUEBA ++; 
 		outFile<<endl;
 	}
-	cout<<"cant img prueba: "<<CANT_IMGS_PRUEBA<<endl;
+	//cout<<"cant img prueba: "<<CANT_IMGS_PRUEBA<<endl;
 	inFile.close();
 	outFile.close();
 	return RutaPruebaFormatoViejo;
@@ -140,17 +139,15 @@ string PasarAFormatoViejoPrueba( string RutaPruebaFormatoNuevo){
 
 
 
-
 void imagenes_A_Vectores(matriz& a, matriz& b, ifstream& TestEntrada, int NoHayTest, int o, string RutaImgsEntrenamiento) // capaz a "o" la llamaría "indice"
 {
-	COUT << "PASANDO IMAGENES A VECTORES " << o + 1 << endl<<endl;
+	COUT << "PASANDO IMAGENES A VECTORES  imagenes_A_Vectores" << o + 1 << endl<<endl;
 	ArchivoEntrada.open(RutaImgsEntrenamiento.c_str());
 	int v = 0;
 	int i = 0;
 	int w = 0;
 	int j, h, t;
 	char m;
-
 	while(v < CANT_IMGS_ENTRENAMIENTO){ 
 		TestEntrada >> t;
 		j = 0;
@@ -184,7 +181,7 @@ void imagenes_A_Vectores(matriz& a, matriz& b, ifstream& TestEntrada, int NoHayT
 		}
 		v++;
 	}
-
+	
 /*	COUT << "escribiendo matriz b:" << endl;
 	escribirMatrizEnConsola(b);
 	COUT << endl;
@@ -201,14 +198,15 @@ void imagenes_A_Vectores(matriz& a, matriz& b, ifstream& TestEntrada, int NoHayT
 
 
 void imagenes_A_Vectores_Salida(matriz& m_imgsEntrenamiento, matriz& m_imgsPrueba, string RutaImgsEntrenamiento, string RutaImgsPrueba){
-	COUT << "PASANDO IMAGENES A VECTORES " << endl;
-	COUT << endl;
+	
+	COUT << "PASANDO IMAGENES A VECTORES imagenes_A_Vectores_Salida" << endl << endl;
+
+	ArchivoEntrenamientoSalida.open(RutaImgsEntrenamiento.c_str());
 	int indice_entrenamientos = 0;
 	int indice_pruebas = 0;
 	int indice_pixeles, pixel;
 	char separador; //separa los pixeles con coma
-	while(indice_entrenamientos < CANT_IMGS_ENTRENAMIENTO) // este número capaz lo haría una constante en vez de hardcodearlo // Una variable decis? Es la idea, pero no se como. // creo que como puse arriba
-	{
+	while(indice_entrenamientos < CANT_IMGS_ENTRENAMIENTO){
 		indice_pixeles = 0;
 		m_imgsEntrenamiento.resize(indice_entrenamientos + 1); //redimensiona a para agregar la imagen de entrenamiento iesima
 		m_imgsEntrenamiento[indice_entrenamientos].resize(CANT_PIXELS_EN_IMG + 1); //la primer coordenada de la imagen es la etiqueta y las restantes 784 son los pixeles
@@ -223,7 +221,10 @@ void imagenes_A_Vectores_Salida(matriz& m_imgsEntrenamiento, matriz& m_imgsPrueb
 		}
 		indice_entrenamientos++;
 	}
+	ArchivoEntrenamientoSalida.close();
+
 	COUT << "cargado train salida" << endl;
+	ArchivoPruebaSalida.open(RutaImgsPrueba.c_str());
 	while(indice_pruebas < CANT_IMGS_PRUEBA){
 		//COUT << "indice_pruebas: " << indice_pruebas << endl;
 		indice_pixeles = 0;
@@ -241,7 +242,13 @@ void imagenes_A_Vectores_Salida(matriz& m_imgsEntrenamiento, matriz& m_imgsPrueb
 		}
 		indice_pruebas++;
 	}
+	ArchivoPruebaSalida.close();
+	
 	COUT << "cargado test salida" << endl;
+	COUT << "escribiendo matriz m_imgsEntrenamiento" << endl;
+	//escribirMatrizEnConsola(m_imgsEntrenamiento);
+	COUT << endl;
+	
     return;
 }
 
@@ -1005,11 +1012,10 @@ void escribirMatrizEnConsola(matriz& m){
 				printf("%.0f,", m[i][j]);
 			}
 
-		    	j++;
+		    j++;
 		}
-
 		cout << endl;
-	    	i++;
+	    i++;
 	}
 	cout << endl;
 }
