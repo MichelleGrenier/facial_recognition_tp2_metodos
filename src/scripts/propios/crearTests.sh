@@ -44,8 +44,8 @@ for kVecinos in $1; do
 done
 
 # ordenar
-cd $nomCarpetaNuevosTests
 
+cd $nomCarpetaNuevosTests
 for kVecinos in $1; do
 
         mkdir -p k$kVecinos
@@ -68,9 +68,10 @@ for kVecinos in $1; do
         done
 
 done
+cd ..
 
 # copio la carpeta tests_recien_creados a tests/parametros
-cp tests_recien_creados ../../../tests/parametros/
+cp -r tests_recien_creados ../../../tests/parametros/
 
 # borro la carpeta tests_recien_creados original
 #rm -r tests_recien_creados
