@@ -79,7 +79,7 @@ string PasarAFormatoViejoEntrenamiento(string RutaEntrenamientoFormatoNuevo){
 		}
 		CANT_IMGS_ENTRENAMIENTO ++;
 		CANT_PIXELS_EN_IMG = height * width;
-<<<<<<< HEAD
+
 		outFile<<endl;
 		
 		char comments[100];
@@ -87,9 +87,6 @@ string PasarAFormatoViejoEntrenamiento(string RutaEntrenamientoFormatoNuevo){
 		cout<<rutaImagen+"probando"<<endl;
 		bool ret2 = SavePPMFile((rutaImagen+"probando").c_str(),data,width,height,PPM_LOADER_PIXEL_TYPE_GRAY_8B, comments);
 		
-=======
-		outFile<<endl;	
->>>>>>> b95091fb954c28952fd35ef553939c2225ce8fcc
 	}
 	cout<<"cant pixels: "<<CANT_PIXELS_EN_IMG<<endl;
 	cout<<"cant img entrenamiento: "<<CANT_IMGS_ENTRENAMIENTO<<endl;
