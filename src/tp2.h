@@ -2,6 +2,7 @@
 #include <istream>
 #include <fstream>
 #include <cmath>
+#include <math.h>
 #include <cstdio>
 #include <vector>
 #include <stdlib.h>
@@ -9,7 +10,7 @@
 #include <time.h>
 #include <string.h>
 #include <assert.h>
-
+#include <utility>
 #include <sstream>
 #include <string>
 #include <algorithm>
@@ -247,7 +248,7 @@ void imagenes_A_Vectores_Salida(matriz& m_imgsEntrenamiento, matriz& m_imgsPrueb
 
 
 
-
+/*
 vector<pair<int,double> > ordenarPrimeraskDistancias(vector<pair<int,double> >& distancias, int k)
 {
 	vector<pair<int,double> > k_vecinos;
@@ -270,9 +271,37 @@ vector<pair<int,double> > ordenarPrimeraskDistancias(vector<pair<int,double> >& 
     }
     return k_vecinos;
 }
+*/
 
 
 
+
+
+
+std::ostream& operator<<(std::ostream& o, const vector<pair<int, double>> & v){	
+    for(int i = 0 ; i< v.size(); i++){
+			o << v[i].first <<  '\t' << v[i].second << endl;
+	}      
+    return o;
+}
+
+
+
+bool pairCompare( const pair<int, double>& x, const pair<int, double>& y ){
+	return x.second < y.second;
+}
+
+
+vector<pair<int,double> > ordenarPrimeraskDistancias(vector<pair<int,double> >& distancias, int k){
+	vector<pair<int, double> > res = distancias;
+	sort(res.begin(), res.end(), pairCompare);
+	vector<pair<int,double> > res_k(res.begin(), res.begin() + k);
+	return res_k;
+}
+
+
+
+/*
 int vecinoGanador(vector<pair<int,double> >& k_vecinos, int f)// f es el numero de imagen
 {
 	int i;
@@ -304,11 +333,55 @@ int vecinoGanador(vector<pair<int,double> >& k_vecinos, int f)// f es el numero 
 		j++;
 	}
 	if(mayoriaAbsoluta == sonIguales){
-		/*COUT << "NO HAY VECINO DOMINANTE PARA LA IMAGEN NUMERO " << f << endl;*/
+		//COUT << "NO HAY VECINO DOMINANTE PARA LA IMAGEN NUMERO " << f << endl;
 		respuesta = k_vecinos[0].first;
 	}
 	return respuesta;
 }
+
+*/
+
+
+
+vector<pair<int,double>> VectorDeRepeticionesYMinDistancia( vector<pair<int,double> >& k_vecinos){
+	vector<pair<int,double>> IdRepsDist (CANT_CLASES, make_pair(0,9999999999999999));
+	for(int i =0; i < CANT_CLASES; i++){
+		int id = k_vecinos[i].first;
+		double dist = k_vecinos[i].second;
+		IdRepsDist[id].first ++; //repeticiones
+		if( dist < IdRepsDist[id].second ) {
+			IdRepsDist[id].second = dist; //distancia
+		}
+	}
+	return IdRepsDist;
+}	
+	
+	
+	
+bool maxReps( const pair<int, double>& x, const pair<int, double>& y )
+{
+	return x.first > y.first;
+}
+
+
+
+int vecinoGanador(vector<pair<int,double> >& k_vecinos, int f)// f es el numero de imagen
+{
+	vector<pair<int,double>> IdRepsDist= VectorDeRepeticionesYMinDistancia(k_vecinos);
+	sort(IdRepsDist.begin(), IdRepsDist.end(), maxReps); //ordeno por repeticiones de mayor a menor
+	int max_reps= IdRepsDist[0].first;
+	int mejor_id= 0;
+	
+	for (int i = 1; IdRepsDist[i].first == max_reps && i < k_vecinos.size(); i++){
+		if( IdRepsDist[i].second < IdRepsDist[mejor_id].second){
+			mejor_id = i;
+		}
+	}
+	return mejor_id;
+}
+
+
+
 
 
 
@@ -337,47 +410,37 @@ void mostrarVector(vector<double>& a){
 
 vector<int> Knn(matriz& ImagenesEntrenamiento, matriz& ImagenesTest, int k, int alfa, int metodo){
 	COUT << "REALIZANDO Knn " << endl;
-	COUT << endl;
-
-	vector<pair<int,double> > distancias;
 	vector<pair<int,double> > k_vecinos;
 	vector<int> respuestas;
-	int f = 0;
-	int i, j;
 	double distanciaImagen, distanciaCoordendas;
-
 	alfa = alfa + 1; 
-
 	respuestas.resize(ImagenesTest.size());
-	distancias.resize(ImagenesEntrenamiento.size());
 	cout << "tamaño imagenes entrenamiento: " << ImagenesEntrenamiento.size() << endl;
-
 	if(metodo == 0){
 		alfa = ImagenesTest[0].size();	// si solo hacemos Knn no reducimos dimensiones
 		cout << "alfa met0: " << alfa << endl;
 	}
-	while(f < ImagenesTest.size()){
-		i = 0;
-		while(i < ImagenesEntrenamiento.size()){
-			j = 1;
+	for(int f = 0; f < ImagenesTest.size(); f++){
+		vector<pair<int,double> > distancias;
+		distancias.resize(ImagenesEntrenamiento.size());
+		for(int i = 0; i < ImagenesEntrenamiento.size(); i++){
 			distanciaImagen = 0;
 			distanciaCoordendas = 0;
-			while(j < alfa){
-				//cout << "i vale: " << i << " , j vale: " << j << " , f vale: " << f << endl;
-				distanciaCoordendas = distanciaCoordendas + ((ImagenesEntrenamiento[i][j] - ImagenesTest[f][j])*(ImagenesEntrenamiento[i][j] - ImagenesTest[f][j]));
-				j++;
+			for(int j= 1; j < alfa; j++){
+				distanciaCoordendas = distanciaCoordendas + pow(ImagenesEntrenamiento[i][j] - ImagenesTest[f][j], 2);
 			}
 			distanciaImagen = sqrt(distanciaCoordendas);
 			distancias[i] = (make_pair(ImagenesEntrenamiento[i][0],distanciaImagen)); // par(id_sujeto, distancia)
-			i++;
 		}
-		//COUT << "dimension de vector distancias: " << distancias.size() << endl;
-
+		cout<<"imagen de test numero: "<<f<<endl;
+	/*	cout<< k<<" distancias"<<endl;
+		cout<<distancias<<endl;
+	*/	
+		
 		k_vecinos = ordenarPrimeraskDistancias(distancias, k);
-		// mostrarVectorOrdenado(k_vecinos); // int=nroReGrande, dist=nan :( => revisar ordenarPrimeraskDistancias
+		//mostrarVectorOrdenado(k_vecinos); // int=nroReGrande, dist=nan :( => revisar ordenarPrimeraskDistancias
 		respuestas[f] = vecinoGanador(k_vecinos, f);
 		COUT << "respuesta[" << f << "] = " << respuestas[f] << endl;
-		f++;
 	}
 	//mostrarVector(respuestas);
 	return respuestas;
