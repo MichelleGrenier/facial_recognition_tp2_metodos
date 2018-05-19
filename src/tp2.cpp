@@ -146,7 +146,7 @@ int main(int argc, char** argv){
             start = std::clock();
 
             matrizCovarianzas = matrizCovarianza(ImagenesEntrenamiento, media);
-            autovalores = metodoDeLaPotencia(matrizCovarianzas, alfa, autovectoresTraspuestos);
+            autovalores = metodoDeLaPotencia(matrizCovarianzas, alfa, autovectoresTraspuestos, CANT_ITERS_MET_POT);
             mostrarVector(autovalores);
 
             COUT << "REALIZANDO TRANSFORMACION CARACTERISTICA" << endl << endl;
@@ -198,7 +198,7 @@ int main(int argc, char** argv){
         }
         if (metodo == 1){
             matrizCovarianzas = matrizCovarianza(ImagenesEntrenamiento, media);
-            autovalores = metodoDeLaPotencia(matrizCovarianzas, alfa, autovectoresTraspuestos);
+            autovalores = metodoDeLaPotencia(matrizCovarianzas, alfa, autovectoresTraspuestos, CANT_ITERS_MET_POT);
             //mostrarVector(autovalores);
             ImagenesEntrenamientoPCA = ImagenesEntrenamiento;
             centrar(ImagenesEntrenamientoPCA, media, ImagenesEntrenamiento.size());
