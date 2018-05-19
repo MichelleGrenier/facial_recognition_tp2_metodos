@@ -54,8 +54,10 @@ string PasarAFormatoViejoEntrenamiento(string RutaEntrenamientoFormatoNuevo){
 	string outfilePath = RutaEntrenamientoFormatoViejo;
 	string line;
 	ifstream inFile(infilePath);
+	if (inFile.fail()){	cout << "Fallo al intentar abrir el archivo "<<"\"" <<infilePath<<"\" " << endl; exit (1);	} 
 	ofstream outFile;
-	outFile.open(outfilePath);	
+	outFile.open(outfilePath);
+	if (outFile.fail()){ cout << "Fallo al intentar abrir el archivo "<<"\"" <<outfilePath<<"\" " << endl; exit (1); }	
 	while( getline(inFile, line) ){
 		istringstream linestream(line);
 		string rutaImagen;
@@ -101,8 +103,10 @@ string PasarAFormatoViejoPrueba( string RutaPruebaFormatoNuevo){
 	string outfilePath = RutaPruebaFormatoViejo;
 	string line;
 	ifstream inFile(infilePath);
+	if (inFile.fail()){ cout << "Fallo al intentar abrir el archivo "<<"\"" <<infilePath<<"\" " << endl; exit (1); }
 	ofstream outFile;
-	outFile.open(outfilePath);	
+	outFile.open(outfilePath);
+	if (outFile.fail()){ cout << "Fallo al intentar abrir el archivo "<<"\"" <<outfilePath<<"\" " << endl; exit (1); }	
 	while( getline(inFile, line) ){
 		istringstream linestream(line);
 		string rutaImagen;
@@ -143,6 +147,7 @@ void imagenes_A_Vectores(matriz& a, matriz& b, ifstream& TestEntrada, int NoHayT
 {
 	COUT << "PASANDO IMAGENES A VECTORES  imagenes_A_Vectores" << o + 1 << endl<<endl;
 	ArchivoEntrada.open(RutaImgsEntrenamiento.c_str());
+	if (ArchivoEntrada.fail()){ cout << "Fallo al intentar abrir el archivo "<<"\"" <<RutaImgsEntrenamiento<<"\" " << endl; exit (1); }	
 	int v = 0;
 	int i = 0;
 	int w = 0;
@@ -200,55 +205,41 @@ void imagenes_A_Vectores(matriz& a, matriz& b, ifstream& TestEntrada, int NoHayT
 void imagenes_A_Vectores_Salida(matriz& m_imgsEntrenamiento, matriz& m_imgsPrueba, string RutaImgsEntrenamiento, string RutaImgsPrueba){
 	
 	COUT << "PASANDO IMAGENES A VECTORES imagenes_A_Vectores_Salida" << endl << endl;
-
-	ArchivoEntrenamientoSalida.open(RutaImgsEntrenamiento.c_str());
-	int indice_entrenamientos = 0;
-	int indice_pruebas = 0;
-	int indice_pixeles, pixel;
+	
+	int pixel;
 	char separador; //separa los pixeles con coma
-	while(indice_entrenamientos < CANT_IMGS_ENTRENAMIENTO){
-		indice_pixeles = 0;
-		m_imgsEntrenamiento.resize(indice_entrenamientos + 1); //redimensiona a para agregar la imagen de entrenamiento iesima
-		m_imgsEntrenamiento[indice_entrenamientos].resize(CANT_PIXELS_EN_IMG + 1); //la primer coordenada de la imagen es la etiqueta y las restantes 784 son los pixeles
-		while(indice_pixeles < CANT_PIXELS_EN_IMG + 1){	
-			if(indice_pixeles == CANT_PIXELS_EN_IMG){
+	ArchivoEntrenamientoSalida.open(RutaImgsEntrenamiento.c_str());
+	if (ArchivoEntrenamientoSalida.fail()){ cout << "Fallo al intentar abrir el archivo "<<"\"" <<RutaImgsEntrenamiento<<"\" " << endl; exit (1); }	
+	for(int idx_entrenamiento = 0; idx_entrenamiento< CANT_IMGS_ENTRENAMIENTO; idx_entrenamiento++){
+		m_imgsEntrenamiento.resize(idx_entrenamiento + 1); //redimensiona a para agregar la imagen de entrenamiento iesima
+		m_imgsEntrenamiento[idx_entrenamiento].resize(CANT_PIXELS_EN_IMG + 1); //la primer coordenada de la imagen es la etiqueta y las restantes 784 son los pixeles		
+		for(int idx_pixel = 0; idx_pixel < CANT_PIXELS_EN_IMG + 1 ; idx_pixel++){	
+			if(idx_pixel == CANT_PIXELS_EN_IMG){
 				ArchivoEntrenamientoSalida >> pixel;
 			} else {
 				ArchivoEntrenamientoSalida >> pixel >> separador;
 			}
-			m_imgsEntrenamiento[indice_entrenamientos][indice_pixeles] = pixel;
-			indice_pixeles++;
+			m_imgsEntrenamiento[idx_entrenamiento][idx_pixel] = pixel;
 		}
-		indice_entrenamientos++;
 	}
 	ArchivoEntrenamientoSalida.close();
 
-	COUT << "cargado train salida" << endl;
 	ArchivoPruebaSalida.open(RutaImgsPrueba.c_str());
-	while(indice_pruebas < CANT_IMGS_PRUEBA){
-		//COUT << "indice_pruebas: " << indice_pruebas << endl;
-		indice_pixeles = 0;
-		m_imgsPrueba.resize(indice_pruebas + 1); //redimensiona a para agregar la imagen de entrenamiento iesima
-		m_imgsPrueba[indice_pruebas].resize(CANT_PIXELS_EN_IMG); //la primer coordenada de la imagen es la etiqueta y las restantes 784 son los pixeles
-		while(indice_pixeles < CANT_PIXELS_EN_IMG){ // acá el +1 mepa que está de más. arriba tmb
+	if (ArchivoPruebaSalida.fail()){ cout << "Fallo al intentar abrir el archivo "<<"\"" <<RutaImgsPrueba<<"\" " << endl; exit (1); }	
+	for (int idx_pruebas = 0; idx_pruebas < CANT_IMGS_PRUEBA; idx_pruebas++){
+		m_imgsPrueba.resize(idx_pruebas + 1); //redimensiona a para agregar la imagen de entrenamiento iesima
+		m_imgsPrueba[idx_pruebas].resize(CANT_PIXELS_EN_IMG); //la primer coordenada de la imagen es la etiqueta y las restantes 784 son los pixeles
+		for(int idx_pixeles = 0 ; idx_pixeles < CANT_PIXELS_EN_IMG; idx_pixeles++){ // acá el +1 mepa que está de más. arriba tmb
 			// COUT << "indice_pixeles: " << indice_pixeles << endl;
-			if(indice_pixeles == CANT_PIXELS_EN_IMG){
+			if(idx_pixeles == CANT_PIXELS_EN_IMG){
 				ArchivoPruebaSalida >> pixel;
 			} else {
 				ArchivoPruebaSalida >> pixel >> separador;
 			}
-			m_imgsPrueba[indice_pruebas][indice_pixeles] = pixel;
-			indice_pixeles++;
+			m_imgsPrueba[idx_pruebas][idx_pixeles] = pixel;
 		}
-		indice_pruebas++;
 	}
 	ArchivoPruebaSalida.close();
-	
-	COUT << "cargado test salida" << endl;
-	COUT << "escribiendo matriz m_imgsEntrenamiento" << endl;
-	//escribirMatrizEnConsola(m_imgsEntrenamiento);
-	COUT << endl;
-	
     return;
 }
 
@@ -925,7 +916,7 @@ vector<double> metodoDeLaPotencia(matriz& matrizCovarianzas, int alfa, matriz& a
 	COUT << "CALCULANDO AUTOVALORES Y AUTOVECTORES" << endl;
 	COUT << endl;
 
-	vector<double> autovalores, x, K_MasUno; // X en la iteracion k + 1. Una vez que se tiene X = autovector, al multiplicarlo una vez mas por A tenemos un vector multiplo, a partir de ese vector y del anterior se obtiene lambda. // perdón, todavía no entiendo de qué la juega "K_MasUno" :(
+	vector<double> autovalores, x, K_MasUno; // X en la iteracion k + 1. Una vez que se tiene X = autovector, al multiplicarlo una vez mas por A tenemos un vector multiplo, a partir de ese vector y del anterior se obtiene lambda. // perdon, todavía no entiendo de qué la juega "K_MasUno" :(
 	srand(time(NULL)); // para que los numeros random no sean siempre los mismos. Con esto van a depender de la hora del reloj de la computadora
 	int k;
 	double y, z;
