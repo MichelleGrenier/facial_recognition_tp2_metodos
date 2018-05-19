@@ -15,18 +15,21 @@ using namespace std;
 
 
 /*
- se compila:  g++ tp2.cpp -o tp2 ppmloader/ppmloader.cpp                                                                         
-  
+ se compila:
+
+	forma 1: g++ -Wall -Wextra -pedantic tp2.cpp -o tp2 ppmloader/ppmloader.cpp
+	forma 2: python2 metnum.py build
+
  se corre: 
- 
- forma 1:  ./tp2 -m <method> -i <train_set> -q <test_set> -o <classif>
- ejemplo:  ./tp2 -m 0 -i ../data/train.csv -q ../data/test.csv -o salida.csv
 
- forma 2 : ./tp2 <archivo con parametros de entrada> <archivo de salida> <method>
- ejemplo:  ./tp2 ../tests/parametros/test_k3a15K10-1.in ../tests/parametros/test_k3a15K10-1.out 0
- ejemplo:  ./tp2 test1.in test1.out 1  
+	 forma 1:  ./tp2 -m <method> -i <train_set> -q <test_set> -o <classif>
+	 ejemplo:  ./tp2 -m 0 -i ../data/train.csv -q ../data/test.csv -o salida.csv
 
- forma 3:   python2 metnum.py test   
+	 forma 2 : ./tp2 <archivo con parametros de entrada> <archivo de salida> <method>
+	 ejemplo:  ./tp2 ../tests/parametros/test_k3a15K10-1.in ../tests/parametros/test_k3a15K10-1.out 0
+	 ejemplo:  ./tp2 test1.in test1.out 1
+
+	 forma 3:   python2 metnum.py test
  */
 
 typedef vector <vector <double> > matriz;
@@ -56,14 +59,14 @@ int main(int argc, char** argv){
 		TestEntrada.open(RutaArchivoEntrada.c_str());
 		TestEntrada >> RutaImgs >> k >> alfa >> K;
 		RutaImgs = PasarAFormatoViejoEntrenamiento(RutaImgs);		
-	}else if (argc == 4) { 		// para buscar los valores óptimos/correr tests propios
+	}else if (argc == 4) {		// para buscar los valores óptimos/correr tests propios
 		RutaArchivoEntrada = argv[1];
 		RutaArchivoSalida = argv[2];
 		metodo = atoi(argv[3]); // 0: kNN, 1: PCA + kNN
 		TestEntrada.open(RutaArchivoEntrada.c_str());
 		TestEntrada >> RutaImgs >> k >> alfa >> K;
 		RutaImgs = PasarAFormatoViejoEntrenamiento(RutaImgs);	
-	}else if (argc == 9) { 		// para usar el data de caras y sacar el csv que pide la catedra
+	}else if (argc == 9) {		// para usar el data de caras y sacar el csv que pide la catedra
 		cout<< "* leo entrada argc 9"<< endl;
 		// estas 2 variables son auxiliares al control del flujo del programa:
 		NoHayTest = 1;
@@ -104,25 +107,25 @@ int main(int argc, char** argv){
 	
 	
 	
-	RutaArchivoSalidaReporte 	= RutaArchivoSalida + ".report";
-	FILE* ArchivoSalidaReporte 	= fopen(RutaArchivoSalidaReporte.c_str(),"w");
-	FILE* ArchivoSalida 		= fopen(RutaArchivoSalida.c_str(),"w");
+	RutaArchivoSalidaReporte	= RutaArchivoSalida + ".report";
+	FILE* ArchivoSalidaReporte	= fopen(RutaArchivoSalidaReporte.c_str(),"w");
+	FILE* ArchivoSalida		= fopen(RutaArchivoSalida.c_str(),"w");
 
 	string met;
 	std::clock_t start;
-	double duration 	= 0;
-	double tiempo 		= 0;
-	float promedio 		= 0;
-	float aux 			= 0;
-	float precision 	= 0;
-	float auxprecision 	= 0;
-	float recall 		= 0;
-	float auxrecall 	= 0;
+	double duration		= 0;
+	double tiempo		= 0;
+	float promedio		= 0;
+	float aux		= 0;
+	float precision		= 0;
+	float auxprecision	= 0;
+	float recall		= 0;
+	float auxrecall		= 0;
 
 
 	for(int i = 0; i < K; i++){ // para cada K-pliegue
 		cout<< "* Pliegues entrada argc 9"<< endl;
-        imagenes_A_Vectores(ImagenesEntrenamiento, ImagenesTest, TestEntrada, NoHayTest, i, RutaImgs);
+	        imagenes_A_Vectores(ImagenesEntrenamiento, ImagenesTest, TestEntrada, NoHayTest, i, RutaImgs);
 		
 		if(metodo == 0){
 			met = "kNN";
