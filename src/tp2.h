@@ -148,8 +148,8 @@ void imagenes_A_Vectores(matriz& a, matriz& b, ifstream& TestEntrada, int NoHayT
 	int v = 0;
 	int i = 0;
 	int w = 0;
-	int j, h, t;
-	char m;
+	int j, h, t; // h es un pixel
+	char m; // m es un separador (una coma o un espacio) que se lee para avanzar un puntero
 	while(v < CANT_IMGS_ENTRENAMIENTO){ 
 		TestEntrada >> t;
 		j = 0;
@@ -165,8 +165,10 @@ void imagenes_A_Vectores(matriz& a, matriz& b, ifstream& TestEntrada, int NoHayT
 		{
 			if(j == CANT_PIXELS_EN_IMG ){
 				ArchivoEntrada >> h;
+				assert(0 <= h && h <= 255);
 			}else{
 				ArchivoEntrada >> h >> m;
+				assert(0 <= h && h <= 255);
 			}
 			if(t == 1 || NoHayTest == 1){
 				a[i][j] = h;
@@ -215,8 +217,10 @@ void imagenes_A_Vectores_Salida(matriz& m_imgsEntrenamiento, matriz& m_imgsPrueb
 		while(indice_pixeles < CANT_PIXELS_EN_IMG + 1){	
 			if(indice_pixeles == CANT_PIXELS_EN_IMG){
 				ArchivoEntrenamientoSalida >> pixel;
+				assert(0 <= pixel && pixel <= 255);
 			} else {
 				ArchivoEntrenamientoSalida >> pixel >> separador;
+				assert(0 <= pixel && pixel <= 255);
 			}
 			m_imgsEntrenamiento[indice_entrenamientos][indice_pixeles] = pixel;
 			indice_pixeles++;
@@ -236,8 +240,10 @@ void imagenes_A_Vectores_Salida(matriz& m_imgsEntrenamiento, matriz& m_imgsPrueb
 			// COUT << "indice_pixeles: " << indice_pixeles << endl;
 			if(indice_pixeles == CANT_PIXELS_EN_IMG){
 				ArchivoPruebaSalida >> pixel;
+				assert(0 <= pixel && pixel <= 255);
 			} else {
 				ArchivoPruebaSalida >> pixel >> separador;
+				assert(0 <= pixel && pixel <= 255);
 			}
 			m_imgsPrueba[indice_pruebas][indice_pixeles] = pixel;
 			indice_pixeles++;
