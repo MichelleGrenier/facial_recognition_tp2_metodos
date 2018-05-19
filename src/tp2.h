@@ -5,6 +5,7 @@
 #include <math.h>
 #include <cstdio>
 #include <vector>
+#include <tuple>
 #include <stdlib.h>
 #include <iomanip>
 #include <time.h>
@@ -349,14 +350,18 @@ int vecinoGanador(vector<pair<int,double> >& k_vecinos, int f)// f es el numero 
 
 
 
-vector<pair<int,double>> VectorDeRepeticionesYMinDistancia( vector<pair<int,double> >& k_vecinos){
-    vector<pair<int,double>> IdRepsDist (CANT_CLASES, make_pair(0,9999999999999999));
+vector< tuple<int, int, double> > VectorDeIdRepeticionesYMinDistancia( vector<pair<int,double> >& k_vecinos){
+    vector<tuple<int, int, double>> IdRepsDist; 
+    for(int i =0; i < CANT_CLASES; i++){
+		IdRepsDist.push_back(tuple<int, int, double> (0,0,9999999.9));
+	}
     for(int i =0; i < CANT_CLASES; i++){
         int id = k_vecinos[i].first;
         double dist = k_vecinos[i].second;
-        IdRepsDist[id].first ++; //repeticiones
-        if( dist < IdRepsDist[id].second ) {
-            IdRepsDist[id].second = dist; //distancia
+        std::get<0>(IdRepsDist[id]) = id; //repeticiones
+        std::get<1>(IdRepsDist[id]) ++; //repeticiones
+        if( dist < std::get<2>(IdRepsDist[id]) ) {
+            std::get<2>(IdRepsDist[id]) = dist; //distancia
         }
     }
     return IdRepsDist;
@@ -364,28 +369,26 @@ vector<pair<int,double>> VectorDeRepeticionesYMinDistancia( vector<pair<int,doub
 
 
 
-bool maxReps( const pair<int, double>& x, const pair<int, double>& y )
-{
-    return x.first > y.first;
+bool maxReps( const tuple<int, int, double>& x, const tuple<int, int, double>& y ){
+    return get<1>(x) > get<1>(y);
 }
 
 
 
-int vecinoGanador(vector<pair<int,double> >& k_vecinos, int f)// f es el numero de imagen
-{
-    vector<pair<int,double>> IdRepsDist= VectorDeRepeticionesYMinDistancia(k_vecinos);
+int vecinoGanador(vector<pair<int,double> >& k_vecinos, int f){// f es el numero de imagen
+    vector<tuple<int, int, double>> IdRepsDist= VectorDeIdRepeticionesYMinDistancia(k_vecinos);
     sort(IdRepsDist.begin(), IdRepsDist.end(), maxReps); //ordeno por repeticiones de mayor a menor
-    int max_reps= IdRepsDist[0].first;
-    int mejor_id= 0;
-
-    for (int i = 1; IdRepsDist[i].first == max_reps && i < k_vecinos.size(); i++){
-        if( IdRepsDist[i].second < IdRepsDist[mejor_id].second){
-            mejor_id = i;
+    int mejor_id= get<0>(IdRepsDist[0]);
+    int max_reps= get<1>(IdRepsDist[0]);
+    double min_dist= get<2>(IdRepsDist[0]);
+    for (int i = 1; get<1>(IdRepsDist[i]) == max_reps && i < k_vecinos.size(); i++){
+        if( get<2>(IdRepsDist[i]) < min_dist ){
+            min_dist = get<2>(IdRepsDist[i]);
+            mejor_id = get<0>(IdRepsDist[i]);
         }
     }
     return mejor_id;
 }
-
 
 
 
@@ -403,7 +406,7 @@ void mostrarVectorOrdenado(vector<pair<int,double> >& distancias){
 
 
 
-void mostrarVector(vector<double>& a){
+void mostrarVector(vector<int>& a){
     int i = 0;
     while(i < a.size()){
         cout << "vector[" << i << "] = " << a[i] << endl;
@@ -411,7 +414,13 @@ void mostrarVector(vector<double>& a){
     }
 }
 
-
+void mostrarVector(vector<double>& a){
+    int i = 0;
+    while(i < a.size()){
+        cout << "vector[" << i << "] = " << a[i] << endl;
+        i++;
+    }
+}
 
 
 vector<int> Knn(matriz& ImagenesEntrenamiento, matriz& ImagenesTest, int k, int alfa, int metodo){
@@ -438,17 +447,11 @@ vector<int> Knn(matriz& ImagenesEntrenamiento, matriz& ImagenesTest, int k, int 
             distanciaImagen = sqrt(distanciaCoordendas);
             distancias[i] = (make_pair(ImagenesEntrenamiento[i][0],distanciaImagen)); // par(id_sujeto, distancia)
         }
-        cout<<"imagen de test numero: "<<f<<endl;
-    /*  cout<< k<<" distancias"<<endl;
-        cout<<distancias<<endl;
-    */
-
         k_vecinos = ordenarPrimeraskDistancias(distancias, k);
-        //mostrarVectorOrdenado(k_vecinos); // int=nroReGrande, dist=nan :( => revisar ordenarPrimeraskDistancias
         respuestas[f] = vecinoGanador(k_vecinos, f);
-        COUT << "respuesta[" << f << "] = " << respuestas[f] << endl;
+        //COUT << endl<<"respuesta[" << f << "] = " << respuestas[f] << endl<<endl;
     }
-    //mostrarVector(respuestas);
+    mostrarVector(respuestas);
     return respuestas;
 }
 
@@ -525,23 +528,23 @@ float Recall(matriz& ImagenesTest, vector<int>& resultados, int j, FILE* Archivo
     float recall = 0;
     int i = 0;
     vector<float> tpi;
-    for (int h=0; h<CANT_CLASES; ++h){
+    for (int h=0; h<CANT_CLASES; h++){
     tpi.push_back(0.0);
     }
     vector<float> fni;
-    for (int k=0; k<CANT_CLASES; ++k){
+    for (int k=0; k<CANT_CLASES; k++){
     fni.push_back(0.0);
     }
     vector<float> recallClases;
-    for (int k=0; k<CANT_CLASES; ++k){
+    for (int k=0; k<CANT_CLASES; k++){
     recallClases.push_back(0.0);
     }
     //cout << endl;
     //cout << "TEST " << j+1 << endl;
 
     while(i < resultados.size()){
-         for (int m=0; m<CANT_CLASES; ++m){
-        if( m == resultados[i] ){
+        for (int m=0; m<CANT_CLASES; m++){
+			if( m == resultados[i] ){
                 if (ImagenesTest[i][0] == m){
                     //cout << "ENTRA A TPI " << endl;
                     tpi[m] = tpi[m] + 1.0;
@@ -551,7 +554,7 @@ float Recall(matriz& ImagenesTest, vector<int>& resultados, int j, FILE* Archivo
             {
                 fni[m] = fni[m] + 1.0;
             }
-    }
+		}
         i++;
     }
     float divisor;
