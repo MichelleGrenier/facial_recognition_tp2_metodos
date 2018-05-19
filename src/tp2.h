@@ -21,10 +21,14 @@ using namespace std;
 
 #define COUT if (1) cout // 0: modo silencioso, 1: modo verborrágico (debug)
 
+// estas ya no son más constantes, vamos a contar cuando levantemos las imágenes. inicializamos en 0
 int CANT_IMGS_ENTRENAMIENTO = 0; // maximo: 41*10 = 410
 int CANT_PIXELS_EN_IMG = 0; //  _full: 92*112 = 10304     _reduced: 23*28 = 644
 int CANT_IMGS_PRUEBA = 0; 
-int CANT_CLASES = 41; 
+
+// estas siguen siendo constantes
+const int CANT_CLASES = 41;
+const int CANT_ITERS_MET_POT = 1000; // TODO: ver con qué número es suficiente // esto está un poco más suave que antes, pero sigue hardcodeado. capaz podría entrar por parámetro en la llamada al programa o via archivo.in
 
 ifstream ArchivoEntrada;
 ifstream ArchivoEntrenamientoSalida;
@@ -217,8 +221,8 @@ void imagenes_A_Vectores_Salida(matriz& m_imgsEntrenamiento, matriz& m_imgsPrueb
     if (ArchivoEntrenamientoSalida.fail()){ cout << "Fallo al intentar abrir el archivo "<<"\"" <<RutaImgsEntrenamiento<<"\" " << endl; exit (1); } 
     for(int idx_entrenamiento = 0; idx_entrenamiento< CANT_IMGS_ENTRENAMIENTO; idx_entrenamiento++){
         m_imgsEntrenamiento.resize(idx_entrenamiento + 1); //redimensiona a para agregar la imagen de entrenamiento iesima
-        m_imgsEntrenamiento[idx_entrenamiento].resize(CANT_PIXELS_EN_IMG + 1); //la primer coordenada de la imagen es la etiqueta y las restantes 784 son los pixeles       
-        for(int idx_pixel = 0; idx_pixel < CANT_PIXELS_EN_IMG + 1 ; idx_pixel++){   
+        m_imgsEntrenamiento[idx_entrenamiento].resize(CANT_PIXELS_EN_IMG + 1); //la primer coordenada de la imagen es la etiqueta y las restantes son los pixeles
+        for(int idx_pixel = 0; idx_pixel < CANT_PIXELS_EN_IMG + 1 ; idx_pixel++){
             if(idx_pixel == CANT_PIXELS_EN_IMG){
                 ArchivoEntrenamientoSalida >> pixel;
                 assert(0 <= pixel && pixel <= 255);
@@ -232,10 +236,10 @@ void imagenes_A_Vectores_Salida(matriz& m_imgsEntrenamiento, matriz& m_imgsPrueb
     ArchivoEntrenamientoSalida.close();
 
     ArchivoPruebaSalida.open(RutaImgsPrueba.c_str());
-    if (ArchivoPruebaSalida.fail()){ cout << "Fallo al intentar abrir el archivo "<<"\"" <<RutaImgsPrueba<<"\" " << endl; exit (1); }   
+    if (ArchivoPruebaSalida.fail()){ cout << "Fallo al intentar abrir el archivo "<<"\"" <<RutaImgsPrueba<<"\" " << endl; exit (1); }
     for (int idx_pruebas = 0; idx_pruebas < CANT_IMGS_PRUEBA; idx_pruebas++){
         m_imgsPrueba.resize(idx_pruebas + 1); //redimensiona a para agregar la imagen de entrenamiento iesima
-        m_imgsPrueba[idx_pruebas].resize(CANT_PIXELS_EN_IMG); //la primer coordenada de la imagen es la etiqueta y las restantes 784 son los pixeles
+        m_imgsPrueba[idx_pruebas].resize(CANT_PIXELS_EN_IMG); //la primer coordenada de la imagen es la etiqueta y las restantes son los pixeles
         for(int idx_pixeles = 0 ; idx_pixeles < CANT_PIXELS_EN_IMG; idx_pixeles++){ // acá el +1 mepa que está de más. arriba tmb
             // COUT << "indice_pixeles: " << indice_pixeles << endl;
             if(idx_pixeles == CANT_PIXELS_EN_IMG){
@@ -982,18 +986,17 @@ vector<double> normalizoX(vector<double>& x)
 
 
 
-vector<double> metodoDeLaPotencia(matriz& matrizCovarianzas, int alfa, matriz& autovectoresTraspuestos) // devuelve un vector<double> c/los avals. vamos a necesitar los avects también, para hacer el cambio de base de los datos. ¿modifica matrizCovarianzas poniendo avectores en sus cols? -- franco
+vector<double> metodoDeLaPotencia(matriz& matrizCovarianzas, int alfa, matriz& autovectoresTraspuestos, const int CANT_ITERS_MET_POT) // devuelve un vector<double> c/los avals. vamos a necesitar los avects también, para hacer el cambio de base de los datos. devuelve matriz de avects traspuestos
 {
 
     COUT << "CALCULANDO AUTOVALORES Y AUTOVECTORES" << endl;
     COUT << endl;
 
-    vector<double> autovalores, x, K_MasUno; // X en la iteracion k + 1. Una vez que se tiene X = autovector, al multiplicarlo una vez mas por A tenemos un vector multiplo, a partir de ese vector y del anterior se obtiene lambda. // perdon, todavía no entiendo de qué la juega "K_MasUno" :(
+    vector<double> autovalores, x, K_MasUno; // K_MasUno es el vector X en la iteracion k + 1. Una vez que se tiene X = autovector, al multiplicarlo una vez mas por A tenemos un vector multiplo, a partir de ese vector y del anterior se obtiene el lambda autovalor
     srand(time(NULL)); // para que los numeros random no sean siempre los mismos. Con esto van a depender de la hora del reloj de la computadora
     int k;
     double y, z;
     int i = 0;
-    int infinito = 1000; // ACA HAY QUE TESTEAR CON QUE NUMERO ES SUFICIENTE // capaz le pondría "pseudoinfinito" en vez de "infinito" -- fp
 
     autovalores.resize(alfa);
     autovectoresTraspuestos.resize(alfa);
@@ -1013,7 +1016,7 @@ vector<double> metodoDeLaPotencia(matriz& matrizCovarianzas, int alfa, matriz& a
         autovalores[i] = 0;
         k = 0;
 
-        while(k < infinito)
+        while(k < CANT_ITERS_MET_POT)
         {
                 x = matrizPorVector(matrizCovarianzas, x);
                 x = normalizoX(x);
