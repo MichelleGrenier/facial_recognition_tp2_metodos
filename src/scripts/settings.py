@@ -11,7 +11,7 @@ sources = [f.rstrip('.cpp') for f in listfiles('.', '*.cpp')]
 compiler = 'g++'
 
 # Programa compilado
-executable = './tp' if os.name == 'posix' else 'tp.exe'
+executable = './tp2' if os.name == 'posix' else 'tp2.exe'
 
 # Parametros extra
 extraParams = []
