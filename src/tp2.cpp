@@ -59,14 +59,14 @@ int main(int argc, char** argv){
 		TestEntrada.open(RutaArchivoEntrada.c_str());
 		TestEntrada >> RutaImgs >> k >> alfa >> K;
 		RutaImgs = PasarAFormatoViejoEntrenamiento(RutaImgs);		
-	}else if (argc == 4) { 		// para buscar los valores óptimos/correr tests propios
+	}else if (argc == 4) {		// para buscar los valores óptimos/correr tests propios
 		RutaArchivoEntrada = argv[1];
 		RutaArchivoSalida = argv[2];
 		metodo = atoi(argv[3]); // 0: kNN, 1: PCA + kNN
 		TestEntrada.open(RutaArchivoEntrada.c_str());
 		TestEntrada >> RutaImgs >> k >> alfa >> K;
 		RutaImgs = PasarAFormatoViejoEntrenamiento(RutaImgs);	
-	}else if (argc == 9) { 		// para usar el data de caras y sacar el csv que pide la catedra
+	}else if (argc == 9) {		// para usar el data de caras y sacar el csv que pide la catedra
 		cout<< "* leo entrada argc 9"<< endl;
 		// estas 2 variables son auxiliares al control del flujo del programa:
 		NoHayTest = 1;
@@ -107,25 +107,25 @@ int main(int argc, char** argv){
 	
 	
 	
-	RutaArchivoSalidaReporte 	= RutaArchivoSalida + ".report";
-	FILE* ArchivoSalidaReporte 	= fopen(RutaArchivoSalidaReporte.c_str(),"w");
-	FILE* ArchivoSalida 		= fopen(RutaArchivoSalida.c_str(),"w");
+	RutaArchivoSalidaReporte	= RutaArchivoSalida + ".report";
+	FILE* ArchivoSalidaReporte	= fopen(RutaArchivoSalidaReporte.c_str(),"w");
+	FILE* ArchivoSalida		= fopen(RutaArchivoSalida.c_str(),"w");
 
 	string met;
 	std::clock_t start;
-	double duration 	= 0;
-	double tiempo 		= 0;
-	float promedio 		= 0;
-	float aux 			= 0;
-	float precision 	= 0;
-	float auxprecision 	= 0;
-	float recall 		= 0;
-	float auxrecall 	= 0;
+	double duration		= 0;
+	double tiempo		= 0;
+	float promedio		= 0;
+	float aux		= 0;
+	float precision		= 0;
+	float auxprecision	= 0;
+	float recall		= 0;
+	float auxrecall		= 0;
 
 
 	for(int i = 0; i < K; i++){ // para cada K-pliegue
 		cout<< "* Pliegues entrada argc 9"<< endl;
-        imagenes_A_Vectores(ImagenesEntrenamiento, ImagenesTest, TestEntrada, NoHayTest, i, RutaImgs);
+	        imagenes_A_Vectores(ImagenesEntrenamiento, ImagenesTest, TestEntrada, NoHayTest, i, RutaImgs);
 		
 		if(metodo == 0){
 			met = "kNN";

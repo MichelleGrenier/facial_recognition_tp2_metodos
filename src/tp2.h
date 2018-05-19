@@ -38,11 +38,13 @@ void escribirMatrizEnConsola(matriz& m);
 
 
 bool replace(string& str, const string& from, const string& to) {
+    bool result = true;
     size_t start_pos = str.find(from);
-    if(start_pos == string::npos)
-        return false;
+    if(start_pos == string::npos){
+        result = false;
+    }
     str.replace(start_pos, from.length(), to);
-    return true;
+    return result;
 }
 
 
@@ -395,24 +397,24 @@ vector<int> Knn(matriz& ImagenesEntrenamiento, matriz& ImagenesTest, int k, int 
 
 float Precision(matriz& ImagenesTest, vector<int>& resultados, int j, FILE* ArchivoSalidaReporte){
 
-	float precision = 0;
-	int i = 0;
+    float precision = 0;
+    int i = 0;
     vector<float> tpi;
     for (int h=0; h<CANT_CLASES; ++h){
-    	tpi.push_back(0.0);
+	tpi.push_back(0.0);
     }
     vector<float> fpi;
     for (int k=0; k<CANT_CLASES; ++k){
-    	fpi.push_back(0.0);
+	fpi.push_back(0.0);
     }
     vector<float> precClases;
     for (int k=0; k<CANT_CLASES; ++k){
-    	precClases.push_back(0.0);
+	precClases.push_back(0.0);
     }
 
 	while(i < resultados.size()){
-		 for (int m=0; m<CANT_CLASES; ++m){
-	    	if( m == resultados[i] ){
+		for (int m=0; m<CANT_CLASES; ++m){
+			if( m == resultados[i] ){
 				if (ImagenesTest[i][0] == m){
 					//cout << "ENTRA A TPI " << endl;
 					tpi[m] = tpi[m] + 1.0;
@@ -421,9 +423,10 @@ float Precision(matriz& ImagenesTest, vector<int>& resultados, int j, FILE* Arch
 					fpi[m] = fpi[m] + 1.0;
 				}
 			}
-    	}
+		}
 		i++;
 	}
+
 	float divisor;
 	for (int i=0; i<CANT_CLASES; ++i){
 		//cout << "FPI " << fpi[i] << endl;
@@ -447,7 +450,7 @@ float Precision(matriz& ImagenesTest, vector<int>& resultados, int j, FILE* Arch
 		//cout << "Precision clase  " << i << " :" << precClases[i] << endl;
     }
     for (int i=0; i<CANT_CLASES; ++i){
-    	precision = precision + precClases[i];
+	precision = precision + precClases[i];
     }
     precision = precision/CANT_CLASES;
 	return precision;
@@ -459,26 +462,26 @@ float Precision(matriz& ImagenesTest, vector<int>& resultados, int j, FILE* Arch
 
 float Recall(matriz& ImagenesTest, vector<int>& resultados, int j, FILE* ArchivoSalidaReporte){
 
-	float recall = 0;
-	int i = 0;
+    float recall = 0;
+    int i = 0;
     vector<float> tpi;
     for (int h=0; h<CANT_CLASES; ++h){
-    	tpi.push_back(0.0);
+	tpi.push_back(0.0);
     }
     vector<float> fni;
     for (int k=0; k<CANT_CLASES; ++k){
-    	fni.push_back(0.0);
+	fni.push_back(0.0);
     }
     vector<float> recallClases;
     for (int k=0; k<CANT_CLASES; ++k){
-    	recallClases.push_back(0.0);
+	recallClases.push_back(0.0);
     }
 	//cout << endl;
 	//cout << "TEST " << j+1 << endl;
 
 	while(i < resultados.size()){
 		 for (int m=0; m<CANT_CLASES; ++m){
-	    	if( m == resultados[i] ){
+		if( m == resultados[i] ){
 				if (ImagenesTest[i][0] == m){
 					//cout << "ENTRA A TPI " << endl;
 					tpi[m] = tpi[m] + 1.0;
@@ -488,7 +491,7 @@ float Recall(matriz& ImagenesTest, vector<int>& resultados, int j, FILE* Archivo
 			{
 				fni[m] = fni[m] + 1.0;
 			}
-    	}
+	}
 		i++;
 	}
 	float divisor;
@@ -514,7 +517,7 @@ float Recall(matriz& ImagenesTest, vector<int>& resultados, int j, FILE* Archivo
 		//cout << "Recall clase  " << i << " :" << recallClases[i] << endl;
     }
     for (int i=0; i<CANT_CLASES; ++i){
-    	recall = recall + recallClases[i];
+	recall = recall + recallClases[i];
     }
     recall = recall/CANT_CLASES;
 	return recall;
@@ -1030,24 +1033,24 @@ void escribirMatrizEnArchivo(matriz& m, FILE* archivo){
 
     while(i < m.size())
     {
-    	j = 0;
+	j = 0;
 
-    	while(j < m[i].size())
-    	{
+	while(j < m[i].size())
+	{
 
-    		if(j == m[i].size() - 1)
-    		{
-    			fprintf(archivo, "%.0f", m[i][j]);
-    		}else
+		if(j == m[i].size() - 1)
+		{
+			fprintf(archivo, "%.0f", m[i][j]);
+		}else
 			{
 				fprintf(archivo, "%.0f,", m[i][j]);
 			}
 
-	    	j++;
-    	}
+		j++;
+	}
 
-    	fprintf(archivo, "\n");
-    	i++;
+	fprintf(archivo, "\n");
+	i++;
     }
 }
 
