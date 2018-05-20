@@ -82,9 +82,8 @@ int main(int argc, char** argv){
         assert( strcmp(argv[7], "-o") == 0 );
         RutaArchivoSalida = argv[8];
         // los parámetros para la salida:
-        k = 5;
+        k = 17;
         alfa = 15;
-        cout<< "* fin leo entrada argc 9"<< endl;
     }else{ // instrucciones de uso
         cout << endl << "Cantidad de argumentos pasados incorrecta." << endl << endl;
         cout << "Uso:" << endl;
@@ -124,7 +123,7 @@ int main(int argc, char** argv){
 
 
     for(int i = 0; i < K; i++){ // para cada K-pliegue
-        cout<< "* Pliegues entrada argc 9"<< endl;
+        //cout<< "* Pliegues entrada argc 9"<< endl;
         imagenes_A_Vectores(ImagenesEntrenamiento, ImagenesTest, TestEntrada, NoHayTest, i, RutaImgs);
 
         if(metodo == 0){
@@ -186,12 +185,11 @@ int main(int argc, char** argv){
                 }
             }
         } // si metodo es 1 (PCA)
-    cout<< "* Fin pliegues entrada argc 9"<< endl;
     } // para cada K-pliegue
 
     // escribimos el .csv segun el modo con el que se corrio el programa
     if (argc == 9) {
-        cout<< "* Calculos argc 9"<< endl;
+        //cout<< "* Calculos argc 9"<< endl;
         imagenes_A_Vectores_Salida(ImagenesEntrenamiento, ImagenesTest, RutaImgsEntrenamiento, RutaImgsPrueba);
         if (metodo == 0){
             resultados = Knn(ImagenesEntrenamiento, ImagenesTest, k, alfa, metodo);
@@ -223,7 +221,6 @@ int main(int argc, char** argv){
             fprintf(ArchivoSalida, "%d,%d\n", i+1, resultados[i]);
             i++;
         }
-        cout<< "* Fin calculos argc 9"<< endl;
     }
     if (argc == 3 || argc == 4) {
         fprintf(ArchivoSalidaReporte, "***RESULTADOS***\n");

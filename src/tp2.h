@@ -153,7 +153,7 @@ string PasarAFormatoViejoPrueba( string RutaPruebaFormatoNuevo){
 
 void imagenes_A_Vectores(matriz& a, matriz& b, ifstream& TestEntrada, int NoHayTest, int o, string RutaImgsEntrenamiento) // capaz a "o" la llamaría "indice"
 {
-    COUT << "PASANDO IMAGENES A VECTORES  imagenes_A_Vectores" << o + 1 << endl<<endl;
+   // COUT << "PASANDO IMAGENES A VECTORES  imagenes_A_Vectores" << o + 1 << endl<<endl;
     ArchivoEntrada.open(RutaImgsEntrenamiento.c_str());
     if (ArchivoEntrada.fail()){ cout << "Fallo al intentar abrir el archivo "<<"\"" <<RutaImgsEntrenamiento<<"\" " << endl; exit (1); } 
     int v = 0; // v: índice imágenes entrenamiento
@@ -197,16 +197,8 @@ void imagenes_A_Vectores(matriz& a, matriz& b, ifstream& TestEntrada, int NoHayT
         v++;
     }
 
-/*  COUT << "escribiendo matriz b:" << endl;
-    escribirMatrizEnConsola(b);
-    COUT << endl;
-
-    COUT << "escribiendo matriz a:" << endl;
-    escribirMatrizEnConsola(a);
-    COUT << endl;
-*/
-    COUT << "dimension de b = " << b.size() << " por " << b[0].size() << endl;
-    COUT << "dimension de a = " << a.size() << " por " << a[0].size() << endl;
+   // COUT << "dimension de b = " << b.size() << " por " << b[0].size() << endl;
+   // COUT << "dimension de a = " << a.size() << " por " << a[0].size() << endl;
     ArchivoEntrada.close();
 }
 
@@ -214,7 +206,7 @@ void imagenes_A_Vectores(matriz& a, matriz& b, ifstream& TestEntrada, int NoHayT
 
 void imagenes_A_Vectores_Salida(matriz& m_imgsEntrenamiento, matriz& m_imgsPrueba, string RutaImgsEntrenamiento, string RutaImgsPrueba){
 
-    COUT << "PASANDO IMAGENES A VECTORES imagenes_A_Vectores_Salida" << endl << endl;
+    //COUT << "PASANDO IMAGENES A VECTORES imagenes_A_Vectores_Salida" << endl << endl;
 
     int pixel;
     char separador; //separa los pixeles con coma
@@ -428,17 +420,18 @@ void mostrarVector(vector<double>& a){
 
 
 vector<int> Knn(matriz& ImagenesEntrenamiento, matriz& ImagenesTest, int k, int alfa, int metodo){
-    COUT << "REALIZANDO Knn " << endl;
+    
+    if (k > ImagenesEntrenamiento.size()-1){ cout <<endl<< "	Fallo parametro k.  En esta corrida k debe ser menor a "<< ImagenesEntrenamiento.size() <<". Ahora vale "<<k<<endl; exit (1); }
     vector<pair<int,double> > k_vecinos;
     vector<int> respuestas;
     double distanciaImagen, distanciaCoordendas;
     alfa = alfa + 1; 
     respuestas.resize(ImagenesTest.size());
-    cout << "tamaño imagenes entrenamiento: " << ImagenesEntrenamiento.size() << endl;
-    cout << "tamaño imagenes test: " << ImagenesTest.size() << endl;
+    cout <<endl<<  "imagenes entrenamiento: " << ImagenesEntrenamiento.size() ;
+    cout << " -  imagenes test: " << ImagenesTest.size();
     if(metodo == 0){
         alfa = CANT_PIXELS_EN_IMG; //ImagenesTest[0].size();  // si solo hacemos Knn no reducimos dimensiones
-        cout << "alfa met0: " << alfa << endl;
+        cout << " -  alfa met0: " << alfa << endl;
     }
     for(int f = 0; f < ImagenesTest.size(); f++){
         vector<pair<int,double> > distancias;
@@ -454,7 +447,7 @@ vector<int> Knn(matriz& ImagenesEntrenamiento, matriz& ImagenesTest, int k, int 
         }
         k_vecinos = ordenarPrimeraskDistancias(distancias, k);
         respuestas[f] = vecinoGanador(k_vecinos, f);
-        COUT << endl<<"respuesta[" << f << "] = " << respuestas[f] << endl<<endl;
+        //COUT <<"respuesta[" << f << "] = " << respuestas[f] << endl;
     }
     //mostrarVector(respuestas);
     return respuestas;
@@ -601,7 +594,7 @@ float resultadosCorrectos(matriz& ImagenesTest, vector<int>& resultados, int j, 
     float porcentajeAciertos;
     int i = 0;
 
-    cout << endl;
+    cout <<endl;
     cout << "TEST " << j+1 << endl;
 
     if(!(resultados.size() == ImagenesTest.size()))
@@ -634,8 +627,7 @@ float resultadosCorrectos(matriz& ImagenesTest, vector<int>& resultados, int j, 
     cout << "Resultados incorrectos: " << resultadosIncorrectos << endl;
     cout.setf(ios::fixed);
     cout <<"Porcentaje de aciertos: " << setprecision(3) << porcentajeAciertos << endl;
-    cout << setprecision(0) << endl;
-    cout << endl;
+    cout << setprecision(0) << endl <<endl;
 
     // acá se escribe en un archivo
     fprintf(ArchivoSalidaReporte, "Resultados correctos: %4.6f\n", resultadosCorrectos);
