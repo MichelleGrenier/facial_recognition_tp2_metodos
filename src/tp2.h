@@ -356,18 +356,18 @@ int vecinoGanador(vector<pair<int,double> >& k_vecinos, int f)// f es el numero 
 
 vector< tuple<int, int, double> > VectorDeIdRepeticionesYMinDistancia( vector<pair<int,double> >& k_vecinos){
     vector<tuple<int, int, double>> IdRepsDist; 
-    for(int i =0; i < CANT_CLASES; i++){
+    for(int i =0; i <= CANT_CLASES; i++){
 		IdRepsDist.push_back(tuple<int, int, double> (0,0,9999999.9));
-	}
-    for(int i =0; i < CANT_CLASES; i++){
-        int id = k_vecinos[i].first;
+	}	
+    for(int i =0; i < k_vecinos.size(); i++){	
+		int id = k_vecinos[i].first;
         double dist = k_vecinos[i].second;
-        std::get<0>(IdRepsDist[id]) = id; //repeticiones
+        std::get<0>(IdRepsDist[id]) = id; //id
         std::get<1>(IdRepsDist[id]) ++; //repeticiones
         if( dist < std::get<2>(IdRepsDist[id]) ) {
             std::get<2>(IdRepsDist[id]) = dist; //distancia
         }
-    }
+	}
     return IdRepsDist;
 }
 
@@ -435,8 +435,9 @@ vector<int> Knn(matriz& ImagenesEntrenamiento, matriz& ImagenesTest, int k, int 
     alfa = alfa + 1; 
     respuestas.resize(ImagenesTest.size());
     cout << "tamaño imagenes entrenamiento: " << ImagenesEntrenamiento.size() << endl;
+    cout << "tamaño imagenes test: " << ImagenesTest.size() << endl;
     if(metodo == 0){
-        alfa = ImagenesTest[0].size();  // si solo hacemos Knn no reducimos dimensiones
+        alfa = CANT_PIXELS_EN_IMG; //ImagenesTest[0].size();  // si solo hacemos Knn no reducimos dimensiones
         cout << "alfa met0: " << alfa << endl;
     }
     for(int f = 0; f < ImagenesTest.size(); f++){
@@ -453,9 +454,9 @@ vector<int> Knn(matriz& ImagenesEntrenamiento, matriz& ImagenesTest, int k, int 
         }
         k_vecinos = ordenarPrimeraskDistancias(distancias, k);
         respuestas[f] = vecinoGanador(k_vecinos, f);
-        //COUT << endl<<"respuesta[" << f << "] = " << respuestas[f] << endl<<endl;
+        COUT << endl<<"respuesta[" << f << "] = " << respuestas[f] << endl<<endl;
     }
-    mostrarVector(respuestas);
+    //mostrarVector(respuestas);
     return respuestas;
 }
 

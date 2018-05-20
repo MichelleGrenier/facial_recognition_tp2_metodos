@@ -82,7 +82,7 @@ int main(int argc, char** argv){
         assert( strcmp(argv[7], "-o") == 0 );
         RutaArchivoSalida = argv[8];
         // los parámetros para la salida:
-        k = 41;
+        k = 5;
         alfa = 15;
         cout<< "* fin leo entrada argc 9"<< endl;
     }else{ // instrucciones de uso
