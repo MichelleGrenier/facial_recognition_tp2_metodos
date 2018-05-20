@@ -42,6 +42,13 @@ typedef vector < vector < double > > matriz; // CAMBIAR A INT ACA Y EN MAIN PARA
 
 void escribirMatrizEnConsola(matriz& m);
 
+bool str_terminaEn (std::string const &fullString, std::string const &ending) {
+    if (fullString.length() >= ending.length()) {
+        return (0 == fullString.compare (fullString.length() - ending.length(), ending.length(), ending));
+    } else {
+        return false;
+    }
+}
 
 bool replace(string& str, const string& from, const string& to) {
     bool result = true;

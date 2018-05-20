@@ -74,6 +74,7 @@ int main(int argc, char** argv){
         metodo = atoi(argv[2]);
         assert( strcmp(argv[3], "-i") == 0 );
         RutaEntrenamientoFormatoNuevo = argv[4];
+        assert( str_terminaEn(RutaEntrenamientoFormatoNuevo, ".csv") );
         RutaImgsEntrenamiento = PasarAFormatoViejoEntrenamiento(RutaEntrenamientoFormatoNuevo); //pasamos a formato viejo
         assert( strcmp(argv[5], "-q") == 0 );
         RutaPruebaFormatoNuevo= argv[6];
@@ -81,7 +82,7 @@ int main(int argc, char** argv){
         assert( strcmp(argv[7], "-o") == 0 );
         RutaArchivoSalida = argv[8];
         // los parámetros para la salida:
-        k = 17;
+        k = 5;
         alfa = 15;
     }else{ // instrucciones de uso
         cout << endl << "Cantidad de argumentos pasados incorrecta." << endl << endl;
