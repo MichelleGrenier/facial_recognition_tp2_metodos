@@ -67,7 +67,6 @@ int main(int argc, char** argv){
         TestEntrada >> RutaImgs >> k >> alfa >> K;
         RutaImgs = PasarAFormatoViejoEntrenamiento(RutaImgs);   
     }else if (argc == 9) {      // para usar el data de caras y sacar el csv que pide la catedra
-        cout<< "* leo entrada argc 9"<< endl;
         // estas 2 variables son auxiliares al control del flujo del programa:
         NoHayTest = 1;
         K = 0;
@@ -197,7 +196,7 @@ int main(int argc, char** argv){
         if (metodo == 1){
             matrizCovarianzas = matrizCovarianza(ImagenesEntrenamiento, media);
             autovalores = metodoDeLaPotencia(matrizCovarianzas, alfa, autovectoresTraspuestos, CANT_ITERS_MET_POT);
-            //mostrarVector(autovalores);
+            mostrarVector(autovalores);
             ImagenesEntrenamientoPCA = ImagenesEntrenamiento;
             centrar(ImagenesEntrenamientoPCA, media, ImagenesEntrenamiento.size());
             int j = 0;

@@ -640,7 +640,7 @@ float resultadosCorrectos(matriz& ImagenesTest, vector<int>& resultados, int j, 
 
 // de acá para abajo comentás si querés hacer solo Knn usando matriz de ints
 
-
+/*
 vector <double> calculoVectorMedias(matriz& ImagenesEntrenamiento)
 {
     COUT << "CALCULANDO VECTOR DE MEDIAS" << endl;
@@ -668,7 +668,29 @@ vector <double> calculoVectorMedias(matriz& ImagenesEntrenamiento)
 
     return media;
 }
+*/
+std::ostream& operator<<(std::ostream& o, const vector< double> & v){ 
+    for(int i = 0 ; i< v.size(); i++){
+            o << v[i] <<'\t' ;
+    }
+    cout<<endl;
+    return o;
+}
 
+
+
+vector <double> calculoVectorMedias(matriz& ImagenesEntrenamiento)
+{
+   vector <double> media (CANT_PIXELS_EN_IMG);
+	for(int j = 1; j<= CANT_PIXELS_EN_IMG; j++){	
+		for(int i = 0; i< CANT_IMGS_ENTRENAMIENTO; i++){			
+			media[j-1] += ImagenesEntrenamiento[i][j];
+		}
+		media[j-1] = media[j-1]/ CANT_IMGS_ENTRENAMIENTO;
+	}
+	return media;
+}
+   
 
 
 
@@ -677,31 +699,14 @@ matriz armarMatrizX(matriz& Imagenes, vector<double>& media, int n)// n es la ca
 {
     matriz b;
     b.resize(Imagenes.size());
-
-    int i = 0;
-    int j = 0;
-
-    while(i < b.size())
-    {
-        b[i].resize(Imagenes[i].size() - 1);
-        i++;
+    for(int i = 0; i < b.size(); i++){
+        b[i].resize(CANT_PIXELS_EN_IMG);
     }
-
-    i = 0;
-
-    while(j < Imagenes[0].size())
-    {
-        i = 0;
-
-        while(i < Imagenes.size())
-        {
+    for(int j = 0; j <  CANT_PIXELS_EN_IMG; j++){
+        for(int i = 0; i < CANT_IMGS_ENTRENAMIENTO; i++){
             b[i][j] = (Imagenes[i][j + 1] - media[j])/(sqrt(n - 1));
-            i++;
         }
-
-        j++;
     }
-
     return b;
 }
 
@@ -816,14 +821,26 @@ vector<double> matrizPorVector(matriz& A, vector<double>& x)
 
 
 
+std::ostream& operator<<(std::ostream& o, const matriz & v){ 
+    for(int i = 0 ; i < v.size(); i++){
+		for(int j= 0; j < v[0].size(); j++){
+            o << v[i][j] << '\t' ;
+        }
+        o << endl;
+    }
+    cout<<endl;
+    return o;
+}
+
+
+
 matriz matrizCovarianza(matriz ImagenesEntrenamiento, vector<double>& media)
-{
+{	
+	cout<<"ENTRENAMIENTO: "<<endl<<ImagenesEntrenamiento<<endl;
     COUT << "CALCULANDO MATRIZ DE COVARIANZAS" << endl << endl;
 
     matriz matrizCovarianza, matrizX, Traspuesta;
-
     media = calculoVectorMedias(ImagenesEntrenamiento); // promedio (de cada dimension), μ
-
     COUT << "ARMANDO MATRIZ X" << endl;
     COUT << endl;
 
@@ -843,7 +860,7 @@ matriz matrizCovarianza(matriz ImagenesEntrenamiento, vector<double>& media)
         matrizCovarianza[i].resize(Traspuesta.size());
         matrizCovarianza[i] = matrizPorVector(Traspuesta, Traspuesta[i]);
         i++;
-        COUT << i << " de"<< CANT_PIXELS_EN_IMG <<" vectores terminados" << endl;
+       // COUT << i << " de"<< CANT_PIXELS_EN_IMG <<" vectores terminados" << endl;
     }
 
     i = 0;
