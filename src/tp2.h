@@ -74,9 +74,20 @@ bool todosIguales(vector<pair<int, int>> dimensiones ){
 
 
 
+bool estaEnBugueados( string rutaImagen){
+	vector<string> bugueados = {"../data/full/s6/4.pgm", "../data/full/s6/5.pgm", "../data/full/s6/6.pgm", "../data/full/s6/7.pgm", "../data/full/s6/8.pgm", "../data/full/s6/9.pgm", "../data/full/s6/10.pgm", "../data/full/s36/1.pgm", "../data/full/s41/6.pgm", "../data/full/s41/7.pgm"};
+	bool res = false;
+	for( int i = 0; i< bugueados.size(); i++){
+		if(rutaImagen == bugueados[i]){ res = true; }
+	}
+	return res;
+}
+
+
+
+
 string PasarAFormatoViejoEntrenamiento(string RutaEntrenamientoFormatoNuevo){
-	
-    string infilePath = RutaEntrenamientoFormatoNuevo;
+    string infilePath = RutaEntrenamientoFormatoNuevo;	
     replace(RutaEntrenamientoFormatoNuevo, ".csv", "_viejo.csv");
     string RutaEntrenamientoFormatoViejo  = RutaEntrenamientoFormatoNuevo;
     string outfilePath = RutaEntrenamientoFormatoViejo;
@@ -93,26 +104,28 @@ string PasarAFormatoViejoEntrenamiento(string RutaEntrenamientoFormatoNuevo){
         string idImagen;
         getline(linestream,rutaImagen,',');
         getline(linestream,idImagen,',');
-        outFile<<idImagen;
-        uchar* data = NULL;
-        int width = 0, height = 0;
-        PPM_LOADER_PIXEL_TYPE pt = PPM_LOADER_PIXEL_TYPE_INVALID;
-        bool ret = LoadPPMFile(&data, &width, &height, &pt, rutaImagen.c_str());
-        if (!ret || width == 0|| height == 0|| pt!=PPM_LOADER_PIXEL_TYPE_GRAY_8B){
-            throw runtime_error( "Fallo al intentar abrir la imagen de entrenamiento: \" "+ rutaImagen + " \" ");
-        }
-		dimensiones.push_back(make_pair(height, width));
-        for (int h = 0; h < height; ++h){
-            for (int w = 0; w < width; ++w){
-                unsigned int pixel = (unsigned int)(data[h*width + w ]);
-                outFile<<","<<pixel;
-            }
-        }
-        CANT_IMGS_ENTRENAMIENTO ++;
-        CANT_PIXELS_EN_IMG = height * width;
-		if( not(todosIguales(dimensiones)) ){ cout << "Fallo. Las imagenes de entrenamiento deben tener todas el mismo tamaño"<< endl; exit (1);}
-        outFile<<endl;
-
+	/**/if(!estaEnBugueados( rutaImagen)){
+			outFile<<idImagen;
+			uchar* data = NULL;
+			int width = 0, height = 0;
+			PPM_LOADER_PIXEL_TYPE pt = PPM_LOADER_PIXEL_TYPE_INVALID;
+			bool ret = LoadPPMFile(&data, &width, &height, &pt, rutaImagen.c_str());
+			if (!ret || width == 0|| height == 0|| pt!=PPM_LOADER_PIXEL_TYPE_GRAY_8B){
+				cout<< "TRUE: "<< true<<" ret: " << ret << " width : "<< width <<" height: "<<height<<" PT: "<< pt<< endl;
+				throw runtime_error( "Fallo al intentar abrir la imagen de entrenamiento: \" "+ rutaImagen + " \" ");
+			}
+			dimensiones.push_back(make_pair(height, width));
+			for (int h = 0; h < height; ++h){
+				for (int w = 0; w < width; ++w){
+					unsigned int pixel = (unsigned int)(data[h*width + w ]);
+					outFile<<","<<pixel;
+				}
+			}
+			CANT_IMGS_ENTRENAMIENTO ++;
+			CANT_PIXELS_EN_IMG = height * width;
+			if( not(todosIguales(dimensiones)) ){ cout << "Fallo. Las imagenes de entrenamiento deben tener todas el mismo tamaño"<< endl; exit (1);}
+			outFile<<endl;
+	/**/}
     }
     //cout<<"cant pixels: "<<CANT_PIXELS_EN_IMG<<endl;
     //cout<<"cant img entrenamiento: "<<CANT_IMGS_ENTRENAMIENTO<<endl;

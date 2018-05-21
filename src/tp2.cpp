@@ -57,15 +57,17 @@ int main(int argc, char** argv){
         RutaArchivoSalida = argv[2];
         metodo = 1;
         TestEntrada.open(RutaArchivoEntrada.c_str());
+		if (TestEntrada.fail()){ cout << "Fallo al intentar abrir el archivo "<<"\"" <<RutaArchivoEntrada<<"\" " << endl; exit (1);  }
         TestEntrada >> RutaImgs >> k >> alfa >> K;
         RutaImgs = PasarAFormatoViejoEntrenamiento(RutaImgs);       
     }else if (argc == 4) {      // para buscar los valores óptimos/correr tests propios
         RutaArchivoEntrada = argv[1];
         RutaArchivoSalida = argv[2];
         metodo = atoi(argv[3]); // 0: kNN, 1: PCA + kNN
-        TestEntrada.open(RutaArchivoEntrada.c_str());
-        TestEntrada >> RutaImgs >> k >> alfa >> K;
-        RutaImgs = PasarAFormatoViejoEntrenamiento(RutaImgs);   
+		TestEntrada.open(RutaArchivoEntrada.c_str());
+		TestEntrada >> RutaImgs >> k >> alfa >> K;
+		if (TestEntrada.fail()){ cout << "Fallo al intentar abrir el archivo "<<"\"" <<RutaArchivoEntrada<<"\" " << endl; exit (1);  }
+		RutaImgs = PasarAFormatoViejoEntrenamiento(RutaImgs);   
     }else if (argc == 9) {      // para usar el data de caras y sacar el csv que pide la catedra
         // estas 2 variables son auxiliares al control del flujo del programa:
         NoHayTest = 1;
