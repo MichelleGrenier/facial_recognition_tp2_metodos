@@ -60,14 +60,28 @@ bool replace(string& str, const string& from, const string& to) {
     return result;
 }
 
+bool todosIguales(vector<pair<int, int>> dimensiones ){
+	
+	bool res = true;
+	pair<int, int > dim_aux = dimensiones[0];
+	for(int i = 0; i < dimensiones.size(); i++){
+		if(dim_aux!= dimensiones[i]){
+			res = false;
+		}
+	}
+	return res;
+}
+
+
 
 string PasarAFormatoViejoEntrenamiento(string RutaEntrenamientoFormatoNuevo){
-
+	
     string infilePath = RutaEntrenamientoFormatoNuevo;
     replace(RutaEntrenamientoFormatoNuevo, ".csv", "_viejo.csv");
     string RutaEntrenamientoFormatoViejo  = RutaEntrenamientoFormatoNuevo;
     string outfilePath = RutaEntrenamientoFormatoViejo;
     string line;
+	vector<pair<int, int>> dimensiones;
     ifstream inFile(infilePath);
     if (inFile.fail()){ cout << "Fallo al intentar abrir el archivo "<<"\"" <<infilePath<<"\" " << endl; exit (1);  }
     ofstream outFile;
@@ -87,6 +101,7 @@ string PasarAFormatoViejoEntrenamiento(string RutaEntrenamientoFormatoNuevo){
         if (!ret || width == 0|| height == 0|| pt!=PPM_LOADER_PIXEL_TYPE_GRAY_8B){
             throw runtime_error( "Fallo al intentar abrir la imagen de entrenamiento: \" "+ rutaImagen + " \" ");
         }
+		dimensiones.push_back(make_pair(height, width));
         for (int h = 0; h < height; ++h){
             for (int w = 0; w < width; ++w){
                 unsigned int pixel = (unsigned int)(data[h*width + w ]);
@@ -95,7 +110,7 @@ string PasarAFormatoViejoEntrenamiento(string RutaEntrenamientoFormatoNuevo){
         }
         CANT_IMGS_ENTRENAMIENTO ++;
         CANT_PIXELS_EN_IMG = height * width;
-
+		if( not(todosIguales(dimensiones)) ){ cout << "Fallo. Las imagenes de entrenamiento deben tener todas el mismo tamaño"<< endl; exit (1);}
         outFile<<endl;
 
     }
@@ -117,6 +132,7 @@ string PasarAFormatoViejoPrueba( string RutaPruebaFormatoNuevo){
     string RutaPruebaFormatoViejo  = RutaPruebaFormatoNuevo;
     string outfilePath = RutaPruebaFormatoViejo;
     string line;
+	vector<pair<int, int>> dimensiones;
     ifstream inFile(infilePath);
     if (inFile.fail()){ cout << "Fallo al intentar abrir el archivo "<<"\"" <<infilePath<<"\" " << endl; exit (1); }
     ofstream outFile;
@@ -135,6 +151,7 @@ string PasarAFormatoViejoPrueba( string RutaPruebaFormatoNuevo){
         if (!ret || width == 0|| height == 0|| pt!=PPM_LOADER_PIXEL_TYPE_GRAY_8B){
             throw runtime_error( "Fallo al intentar abrir la imagen de prueba: \" "+ rutaImagen + " \" ");
         }
+		dimensiones.push_back(make_pair(height, width));
         for (int h = 0; h < height; ++h){
             for (int w = 0; w < width; ++w){
                 unsigned int pixel = (unsigned int)(data[h*width + w ]);
@@ -145,8 +162,11 @@ string PasarAFormatoViejoPrueba( string RutaPruebaFormatoNuevo){
                 }
             }
         }
-        CANT_IMGS_PRUEBA ++; 
-        outFile<<endl;
+        CANT_IMGS_PRUEBA ++;
+		if( not(todosIguales(dimensiones)) ){ cout << "Fallo. Las imagenes de prueba deben tener todas el mismo tamaño"<< endl; exit (1);}
+		if( not(height * width == CANT_PIXELS_EN_IMG) ){ cout << "Fallo. Las imagenes de prueba deben tener el mismo tamaño que las de entrenamiento."<< endl; exit (1);}
+        
+		outFile<<endl;
     }
     //cout<<"cant img prueba: "<<CANT_IMGS_PRUEBA<<endl;
     inFile.close();
