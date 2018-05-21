@@ -218,7 +218,7 @@ int main(int argc, char** argv){
             resultados = Knn(ImagenesEntrenamientoPCA, ImagenesTestPCA, k, alfa, metodo);
         } // si knn + pca
 
-        fprintf(ArchivoSalida, "ImageId,Label\n");
+        fprintf(ArchivoSalida, "ImageIndex,Label\n");
         int i = 0;
         while ( i < resultados.size() ){
             fprintf(ArchivoSalida, "%d,%d\n", i+1, resultados[i]);
