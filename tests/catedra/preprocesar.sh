@@ -1,7 +1,7 @@
 
 # agrega "../data/" a cada línea y cambia la extensión .in por .csv
 
-cd $(dirname $0)
+cd $(dirname $0)    # para que se corra desde la carpeta en la que está (y no la carpeta desde donde lo llaman)
 
 for archivo in *.in; do
 
