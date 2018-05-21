@@ -74,7 +74,10 @@ int main(int argc, char** argv){
         metodo = atoi(argv[2]);
         assert( strcmp(argv[3], "-i") == 0 );
         RutaEntrenamientoFormatoNuevo = argv[4];
-        assert( str_terminaEn(RutaEntrenamientoFormatoNuevo, ".csv") );
+        if ( str_terminaEn(RutaEntrenamientoFormatoNuevo, ".csv") ){
+            cout << "recibí un archivo que no termina en csv. si es un test de la cátedra, por favor preprocesar con el script que está en la misma carpeta y usar el archivo preprocesado .csv" << endl;
+            return 1;
+        }
         RutaImgsEntrenamiento = PasarAFormatoViejoEntrenamiento(RutaEntrenamientoFormatoNuevo); //pasamos a formato viejo
         assert( strcmp(argv[5], "-q") == 0 );
         RutaPruebaFormatoNuevo= argv[6];
