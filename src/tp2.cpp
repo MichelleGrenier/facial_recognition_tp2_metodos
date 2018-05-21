@@ -59,15 +59,17 @@ int main(int argc, char** argv){
         RutaArchivoSalida = argv[2];
         metodo = 1;
         TestEntrada.open(RutaArchivoEntrada.c_str());
+		if (TestEntrada.fail()){ cout << "Fallo al intentar abrir el archivo "<<"\"" <<RutaArchivoEntrada<<"\" " << endl; exit (1);  }
         TestEntrada >> RutaImgs >> k >> alfa >> K;
         RutaImgs = PasarAFormatoViejoEntrenamiento(RutaImgs);       
     }else if (argc == 4) {      // para buscar los valores óptimos/correr tests propios
         RutaArchivoEntrada = argv[1];
         RutaArchivoSalida = argv[2];
         metodo = atoi(argv[3]); // 0: kNN, 1: PCA + kNN
-        TestEntrada.open(RutaArchivoEntrada.c_str());
-        TestEntrada >> RutaImgs >> k >> alfa >> K;
-        RutaImgs = PasarAFormatoViejoEntrenamiento(RutaImgs);   
+		TestEntrada.open(RutaArchivoEntrada.c_str());
+		TestEntrada >> RutaImgs >> k >> alfa >> K;
+		if (TestEntrada.fail()){ cout << "Fallo al intentar abrir el archivo "<<"\"" <<RutaArchivoEntrada<<"\" " << endl; exit (1);  }
+		RutaImgs = PasarAFormatoViejoEntrenamiento(RutaImgs);   
     }else if (argc == 9) {      // para usar el data de caras y sacar el csv que pide la catedra
         // estas 2 variables son auxiliares al control del flujo del programa:
         NoHayTest = 1;
@@ -76,6 +78,10 @@ int main(int argc, char** argv){
         metodo = atoi(argv[2]);
         assert( strcmp(argv[3], "-i") == 0 );
         RutaEntrenamientoFormatoNuevo = argv[4];
+        if ( str_terminaEn(RutaEntrenamientoFormatoNuevo, ".csv") ){
+            cout << "recibí un archivo que no termina en csv. si es un test de la cátedra, por favor preprocesar con el script que está en la misma carpeta y usar el archivo preprocesado .csv" << endl;
+            return 1;
+        }
         RutaImgsEntrenamiento = PasarAFormatoViejoEntrenamiento(RutaEntrenamientoFormatoNuevo); //pasamos a formato viejo
         assert( strcmp(argv[5], "-q") == 0 );
         RutaPruebaFormatoNuevo= argv[6];
@@ -83,7 +89,7 @@ int main(int argc, char** argv){
         assert( strcmp(argv[7], "-o") == 0 );
         RutaArchivoSalida = argv[8];
         // los parámetros para la salida:
-        k = 17;
+        k = 5;
         alfa = 15;
     }else{ // instrucciones de uso
         cout << endl << "Cantidad de argumentos pasados incorrecta." << endl << endl;
@@ -216,7 +222,7 @@ int main(int argc, char** argv){
             resultados = Knn(ImagenesEntrenamientoPCA, ImagenesTestPCA, k, alfa, metodo);
         } // si knn + pca
 
-        fprintf(ArchivoSalida, "ImageId,Label\n");
+        fprintf(ArchivoSalida, "ImageIndex,Label\n");
         int i = 0;
         while ( i < resultados.size() ){
             fprintf(ArchivoSalida, "%d,%d\n", i+1, resultados[i]);

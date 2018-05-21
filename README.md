@@ -12,10 +12,9 @@ Es un zip con:
 * un zip con las imágenes (completas y reducidas)
 * y las diapos de la intro a manejo de imágenes
 
-Los tests de la cátedra no hace falta bajarlos, ya están subidos al repo. Estos tests asumen que las imágenes completas están en un directorio llamado "full" y las reducidas en un directorio llamado "reduced". Entonces hay que hacer este cambio de nombres:
+Los tests de la cátedra no hace falta bajarlos, ya están subidos al repo.
 
-```
-mv ImagenesCaras full
-mv ImagenesCarasRed reduced
-```
+Al final las imágenes las terminamos subiendo al repo (subóptimo, pero con el campus es más complicado automatizar la bajada y estamos atrasados).
+
+Para compilar el informe, tiene que estar el enunciado en la carpeta docs (lo incluye en un apéndice).
 
