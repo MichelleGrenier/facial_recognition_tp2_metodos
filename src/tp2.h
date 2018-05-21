@@ -680,10 +680,13 @@ std::ostream& operator<<(std::ostream& o, const vector< double> & v){
 
 
 vector <double> calculoVectorMedias(matriz& ImagenesEntrenamiento)
-{
+{	
+cout<<"CANT_IMGS_ENTRENAMIENTO: "<<CANT_IMGS_ENTRENAMIENTO<<endl;
+cout<<"CANT_PIXELS_EN_IMG: "<< CANT_PIXELS_EN_IMG<<endl;
    vector <double> media (CANT_PIXELS_EN_IMG);
 	for(int j = 1; j<= CANT_PIXELS_EN_IMG; j++){	
-		for(int i = 0; i< CANT_IMGS_ENTRENAMIENTO; i++){			
+		for(int i = 0; i< CANT_IMGS_ENTRENAMIENTO; i++){
+			//cout<<"i "<<i<<" j "<<j<<endl;			
 			media[j-1] += ImagenesEntrenamiento[i][j];
 		}
 		media[j-1] = media[j-1]/ CANT_IMGS_ENTRENAMIENTO;
@@ -841,6 +844,8 @@ matriz matrizCovarianza(matriz ImagenesEntrenamiento, vector<double>& media)
 
     matriz matrizCovarianza, matrizX, Traspuesta;
     media = calculoVectorMedias(ImagenesEntrenamiento); // promedio (de cada dimension), μ
+    cout<<"MEDIAS"<<endl;
+    cout<< media<<endl;
     COUT << "ARMANDO MATRIZ X" << endl;
     COUT << endl;
 
