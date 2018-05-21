@@ -85,7 +85,7 @@ string PasarAFormatoViejoEntrenamiento(string RutaEntrenamientoFormatoNuevo){
         PPM_LOADER_PIXEL_TYPE pt = PPM_LOADER_PIXEL_TYPE_INVALID;
         bool ret = LoadPPMFile(&data, &width, &height, &pt, rutaImagen.c_str());
         if (!ret || width == 0|| height == 0|| pt!=PPM_LOADER_PIXEL_TYPE_GRAY_8B){
-            throw runtime_error("test_load failed");
+            throw runtime_error( "Fallo al intentar abrir la imagen de entrenamiento: \" "+ rutaImagen + " \" ");
         }
         for (int h = 0; h < height; ++h){
             for (int w = 0; w < width; ++w){
@@ -133,7 +133,7 @@ string PasarAFormatoViejoPrueba( string RutaPruebaFormatoNuevo){
         PPM_LOADER_PIXEL_TYPE pt = PPM_LOADER_PIXEL_TYPE_INVALID;
         bool ret = LoadPPMFile(&data, &width, &height, &pt, rutaImagen.c_str());
         if (!ret || width == 0|| height == 0|| pt!=PPM_LOADER_PIXEL_TYPE_GRAY_8B){
-            throw runtime_error("test_load failed");
+            throw runtime_error( "Fallo al intentar abrir la imagen de prueba: \" "+ rutaImagen + " \" ");
         }
         for (int h = 0; h < height; ++h){
             for (int w = 0; w < width; ++w){
