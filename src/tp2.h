@@ -580,65 +580,71 @@ float Precision(matriz& ImagenesTest, vector<int>& resultados, int j, FILE* Arch
 
 float Recall(matriz& ImagenesTest, vector<int>& resultados, int j, FILE* ArchivoSalidaReporte){
 
-    float recall = 0;
-    int i = 0;
+    // inicializo vectores tpi, fni y recallClases, de tamaño CANT_CLASES, con 0.0
     vector<float> tpi;
     for (int h=0; h<CANT_CLASES; h++){
-    tpi.push_back(0.0);
+        tpi.push_back(0.0);
     }
     vector<float> fni;
     for (int k=0; k<CANT_CLASES; k++){
-    fni.push_back(0.0);
+        fni.push_back(0.0);
     }
     vector<float> recallClases;
     for (int k=0; k<CANT_CLASES; k++){
-    recallClases.push_back(0.0);
+        recallClases.push_back(0.0);
     }
-    //cout << endl;
-    //cout << "TEST " << j+1 << endl;
 
+    //COUT << "TEST " << j+1 << endl;
+
+    int i = 0;
     while(i < resultados.size()){
         for (int m=0; m<CANT_CLASES; m++){
-			if( m == resultados[i] ){
+            if( m == resultados[i] ){
                 if (ImagenesTest[i][0] == m){
-                    //cout << "ENTRA A TPI " << endl;
+                    //COUT << "ENTRA A TPI " << endl;
                     tpi[m] = tpi[m] + 1.0;
                 }
             }
-            if ((ImagenesTest[i][0] == m && ImagenesTest[i][0] != resultados[i] ))
-            {
+            if ( (ImagenesTest[i][0] == m) && (ImagenesTest[i][0] != resultados[i] ) ){
                 fni[m] = fni[m] + 1.0;
             }
-		}
+        }
         i++;
     }
-    float divisor;
+
+    float tp, divisor, pre;
     for (int i=0; i<CANT_CLASES; ++i){
-        //cout << "FNI " << fni[i] << endl;
-        //cout << "TPI " << tpi[i] << endl;
-        float t = tpi[i];
-        float f = fni[i];
-        divisor = t+f;
-        //cout << "t " << t << endl;
-        //cout << "f " << f << endl;
+        //COUT << "FNI " << fni[i] << endl;
+        //COUT << "TPI " << tpi[i] << endl;
+        tp = tpi[i];
+        divisor = tp+fni[i];
+        //COUT << "t " << t << endl;
+        //COUT << "f " << f << endl;
 
+        if ( divisor != 0 ) {
 
-        float pre = t/(t+f);
-        //cout << "precison " << pre << endl;
+            pre = tp/divisor;
 
-        divisor = tpi[i]+fni[i];
-        //cout << "DIVISOR " << divisor << endl;
+        } else {
+
+            pre = 1.0; // no estoy tan seguro que esto esté bien así, pero arregla el -nan // ver issue #2
+        }
+        //COUT << "precison " << pre << endl;
+
+        //COUT << "DIVISOR " << divisor << endl;
 
         recallClases[i] = pre;
-        //cout << "recall clase i " << recallClases[i] << endl;
+        //COUT << "recall clase i " << recallClases[i] << endl;
         fprintf(ArchivoSalidaReporte, "Recall clase %d :  %4.6f\n", i, recallClases[i]);
-        //cout << "Recall clase  " << i << " :" << recallClases[i] << endl;
+        //COUT << "Recall clase  " << i << " :" << recallClases[i] << endl;
     }
+
+    float sumRecalls = 0;
     for (int i=0; i<CANT_CLASES; ++i){
-    recall = recall + recallClases[i];
+
+        sumRecalls = sumRecalls + recallClases[i];
     }
-    recall = recall/CANT_CLASES;
-    return recall;
+    return sumRecalls/CANT_CLASES; // promedio
 }
 
 
