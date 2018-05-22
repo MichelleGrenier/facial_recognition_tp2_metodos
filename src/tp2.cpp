@@ -24,10 +24,12 @@ using namespace std;
 
      forma 1:  ./tp2 -m <method> -i <train_set> -q <test_set> -o <classif>
      ejemplo:  ./tp2 -m 0 -i ../data/train.csv -q ../data/test.csv -o salida.csv
-
+	 ejemplo:  ./tp2 -m 1 -i ../data/test_trivial_e_indices/train_s1_s41_fotomin1_fotomax9_reduced.csv -q ../data/test_trivial_e_indices/test_s1_s41_foto10_reduced.csv -o salida.csv
+     
      forma 2 : ./tp2 <archivo con parametros de entrada> <archivo de salida> <method>
      ejemplo:  ./tp2 ../tests/parametros/test_k3a15K10-1.in ../tests/parametros/test_k3a15K10-1.out 0
      ejemplo:  ./tp2 test1.in test1.out 1
+			   
 
      forma 3:   python2 metnum.py test
  */
