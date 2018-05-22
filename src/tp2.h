@@ -708,15 +708,16 @@ vector <double> calculoVectorMedias(matriz& ImagenesEntrenamiento)
 {	
 cout<<"CANT_IMGS_ENTRENAMIENTO: "<<CANT_IMGS_ENTRENAMIENTO<<endl;
 cout<<"CANT_PIXELS_EN_IMG: "<< CANT_PIXELS_EN_IMG<<endl;
-   vector <double> media (CANT_PIXELS_EN_IMG);
-	for(int j = 1; j<= CANT_PIXELS_EN_IMG; j++){	
+   vector <double> medias (CANT_PIXELS_EN_IMG);
+	for(int j = 0; j< CANT_PIXELS_EN_IMG; j++){	
 		for(int i = 0; i< CANT_IMGS_ENTRENAMIENTO; i++){
-			//cout<<"i "<<i<<" j "<<j<<endl;			
-			media[j-1] += ImagenesEntrenamiento[i][j];
+			cout<<"i "<<i<<" j "<<j<<endl;			
+			medias[j] += ImagenesEntrenamiento[i][j+1];
 		}
-		media[j-1] = media[j-1]/ CANT_IMGS_ENTRENAMIENTO;
+		medias[j] = medias[j]/ CANT_IMGS_ENTRENAMIENTO;
 	}
-	return media;
+	cout<<"medias: "<<medias<<endl;
+	return medias;
 }
    
 
