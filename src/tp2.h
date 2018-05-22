@@ -498,29 +498,33 @@ vector<int> Knn(matriz& ImagenesEntrenamiento, matriz& ImagenesTest, int k, int 
 
 float Precision(matriz& ImagenesTest, vector<int>& resultados, int j, FILE* ArchivoSalidaReporte){
 
-    float precision = 0;
-    int i = 0;
     vector<float> tpi;
     for (int h=0; h<CANT_CLASES; ++h){
-    tpi.push_back(0.0);
-    }
-    vector<float> fpi;
-    for (int k=0; k<CANT_CLASES; ++k){
-    fpi.push_back(0.0);
-    }
-    vector<float> precClases;
-    for (int k=0; k<CANT_CLASES; ++k){
-    precClases.push_back(0.0);
+        tpi.push_back(0.0);
     }
 
+    vector<float> fpi;
+    for (int k=0; k<CANT_CLASES; ++k){
+        fpi.push_back(0.0);
+    }
+
+    vector<float> precClases;
+    for (int k=0; k<CANT_CLASES; ++k){
+        precClases.push_back(0.0);
+    }
+
+    int i = 0;
     while(i < resultados.size()){
+
         for (int m=0; m<CANT_CLASES; ++m){
+
             if( m == resultados[i] ){
+
                 if (ImagenesTest[i][0] == m){
-                    //cout << "ENTRA A TPI " << endl;
+                    //COUT << "ENTRA A TPI " << endl;
                     tpi[m] = tpi[m] + 1.0;
                 }else{
-                    //cout << "ENTRA A FPI " << endl;
+                    //COUT << "ENTRA A FPI " << endl;
                     fpi[m] = fpi[m] + 1.0;
                 }
             }
@@ -530,29 +534,32 @@ float Precision(matriz& ImagenesTest, vector<int>& resultados, int j, FILE* Arch
 
     float divisor;
     for (int i=0; i<CANT_CLASES; ++i){
-        //cout << "FPI " << fpi[i] << endl;
-        //cout << "TPI " << tpi[i] << endl;
+        //COUT << "FPI " << fpi[i] << endl;
+        //COUT << "TPI " << tpi[i] << endl;
         float t = tpi[i];
         float f = fpi[i];
         divisor = t+f;
-        //cout << "t " << t << endl;
-        //cout << "f " << f << endl;
+        //COUT << "t " << t << endl;
+        //COUT << "f " << f << endl;
 
 
         float pre = t/(t+f);
-        //cout << "precison " << pre << endl;
+        //COUT << "precison " << pre << endl;
 
         divisor = tpi[i]+fpi[i];
-        //cout << "DIVISOR " << divisor << endl;
+        //COUT << "DIVISOR " << divisor << endl;
 
         precClases[i] = pre;
-        //cout << "prec clase i " << precClases[i] << endl;
+        //COUT << "prec clase i " << precClases[i] << endl;
         fprintf(ArchivoSalidaReporte, "Precision clase %d :  %4.6f\n", i, precClases[i]);
-        //cout << "Precision clase  " << i << " :" << precClases[i] << endl;
+        //COUT << "Precision clase  " << i << " :" << precClases[i] << endl;
     }
+
+    float precision = 0;
     for (int i=0; i<CANT_CLASES; ++i){
-    precision = precision + precClases[i];
+        precision = precision + precClases[i];
     }
+
     precision = precision/CANT_CLASES;
     return precision;
 }
