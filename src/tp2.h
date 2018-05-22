@@ -483,37 +483,41 @@ vector<int> Knn(matriz& ImagenesEntrenamiento, matriz& ImagenesTest, int k, int 
 
 float Precision(matriz& ImagenesTest, vector<int>& resultados, int j, FILE* ArchivoSalidaReporte){
 
+    // lleno el vector de (verdaderos) positivos con 0.0s // tiene tamaño CANT_CLASES (41)
     vector<float> tpi;
     for (int h=0; h<CANT_CLASES; ++h){
         tpi.push_back(0.0);
     }
 
+    // lleno el vector de falsos positivos con 0.0s // es tan largo como la cantidad de clases (41)
     vector<float> fpi;
     for (int k=0; k<CANT_CLASES; ++k){
         fpi.push_back(0.0);
     }
 
+    // lleno el vector ¿precision clases? con 0.0s // también mide CANT_CLASES
     vector<float> precClases;
     for (int k=0; k<CANT_CLASES; ++k){
         precClases.push_back(0.0);
     }
 
     int i = 0;
-    while(i < resultados.size()){
+    while(i < resultados.size()){ // mientras no haya terminado de recorrer el vector<int> resultados que me pasaron por referencia
 
-        for (int m=0; m<CANT_CLASES; ++m){
+        for (int m=0; m<CANT_CLASES; ++m){ // por cada clase que haya (41 personas)
 
-            if( m == resultados[i] ){
+            if( m == resultados[i] ){ // si el índice de clase m coincide con el resultado[i] que estoy viendo
 
-                if (ImagenesTest[i][0] == m){
+                if (ImagenesTest[i][0] == m){ // si la clase de la i-ésima imagen de test coincide con el índice de clase m
                     //COUT << "ENTRA A TPI " << endl;
-                    tpi[m] = tpi[m] + 1.0;
+                    tpi[m] = tpi[m] + 1.0; // sumar 1 al vector de (verdaderos) positivos en la posición del índice de clase m
                 }else{
                     //COUT << "ENTRA A FPI " << endl;
-                    fpi[m] = fpi[m] + 1.0;
+                    fpi[m] = fpi[m] + 1.0; // sumar 1 al vector de falsos positivos en la posición del índice de clase m
                 }
             }
         }
+
         i++;
     }
 
