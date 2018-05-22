@@ -23,7 +23,7 @@ using namespace std;
 #define COUT if (1) cout // 0: modo silencioso, 1: modo verborrágico (debug)
 
 // estas ya no son más constantes, vamos a contar cuando levantemos las imágenes. inicializamos en 0
-int CANT_IMGS_ENTRENAMIENTO = 0; // maximo: 41*10 = 410
+int CANT_IMGS_ENTRENAMIENTO = 0 ; // maximo: 41*10 = 410
 int CANT_PIXELS_EN_IMG = 0; //  _full: 92*112 = 10304     _reduced: 23*28 = 644
 int CANT_IMGS_PRUEBA = 0; 
 
@@ -74,6 +74,9 @@ bool todosIguales(vector<pair<int, int>> dimensiones ){
 
 
 string PasarAFormatoViejoEntrenamiento(string RutaEntrenamientoFormatoNuevo){
+	
+	CANT_IMGS_ENTRENAMIENTO = 0;
+	CANT_PIXELS_EN_IMG = 0;
     string infilePath = RutaEntrenamientoFormatoNuevo;	
     replace(RutaEntrenamientoFormatoNuevo, ".csv", "_viejo.csv");
     string RutaEntrenamientoFormatoViejo  = RutaEntrenamientoFormatoNuevo;
@@ -123,7 +126,7 @@ string PasarAFormatoViejoEntrenamiento(string RutaEntrenamientoFormatoNuevo){
 
 
 string PasarAFormatoViejoPrueba( string RutaPruebaFormatoNuevo, vector<int>& glosario){
-
+	CANT_IMGS_PRUEBA = 0;
     string infilePath = RutaPruebaFormatoNuevo;
     replace(RutaPruebaFormatoNuevo, ".csv", "_viejo.csv");
     string RutaPruebaFormatoViejo  = RutaPruebaFormatoNuevo;
@@ -188,7 +191,7 @@ void imagenes_A_Vectores(matriz& a, matriz& b, ifstream& TestEntrada, int NoHayT
     char m; // m es un separador (una coma o un espacio) que se lee para avanzar un puntero
     int imagenes_totales= CANT_IMGS_ENTRENAMIENTO; 
     CANT_IMGS_ENTRENAMIENTO = 0;
-    while(v < imagenes_totales){ 
+    while(v < imagenes_totales){
         TestEntrada >> t;
         j = 0;
         if(t == 1 || NoHayTest == 1){// si "NoHayTest" está activado, no se particiona "train"
