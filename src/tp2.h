@@ -186,15 +186,19 @@ void imagenes_A_Vectores(matriz& a, matriz& b, ifstream& TestEntrada, int NoHayT
     int w = 0;
     int j, h, t; // h es un píxel // t indica si la imagen se usa para entrenar o para pr0bar // j: índice píxeles
     char m; // m es un separador (una coma o un espacio) que se lee para avanzar un puntero
-    while(v < CANT_IMGS_ENTRENAMIENTO){ 
+    int imagenes_totales= CANT_IMGS_ENTRENAMIENTO; 
+    CANT_IMGS_ENTRENAMIENTO = 0;
+    while(v < imagenes_totales){ 
         TestEntrada >> t;
         j = 0;
         if(t == 1 || NoHayTest == 1){// si "NoHayTest" está activado, no se particiona "train"
             a.resize(i + 1);
             a[i].resize(CANT_PIXELS_EN_IMG + 1);
+            CANT_IMGS_ENTRENAMIENTO ++;
         }else{
             b.resize(w + 1);
             b[w].resize(CANT_PIXELS_EN_IMG + 1);
+            CANT_IMGS_PRUEBA ++;
         }
 
         while(j<CANT_PIXELS_EN_IMG + 1)
@@ -732,19 +736,15 @@ std::ostream& operator<<(std::ostream& o, const vector< double> & v){
 
 
 
-vector <double> calculoVectorMedias(matriz& ImagenesEntrenamiento)
-{	
-cout<<"CANT_IMGS_ENTRENAMIENTO: "<<CANT_IMGS_ENTRENAMIENTO<<endl;
-cout<<"CANT_PIXELS_EN_IMG: "<< CANT_PIXELS_EN_IMG<<endl;
-   vector <double> medias (CANT_PIXELS_EN_IMG);
+
+vector <double> calculoVectorMedias(matriz& ImagenesEntrenamiento){
+	vector <double> medias (CANT_PIXELS_EN_IMG);
 	for(int j = 0; j< CANT_PIXELS_EN_IMG; j++){	
 		for(int i = 0; i< CANT_IMGS_ENTRENAMIENTO; i++){
-			cout<<"i "<<i<<" j "<<j<<endl;			
 			medias[j] += ImagenesEntrenamiento[i][j+1];
 		}
 		medias[j] = medias[j]/ CANT_IMGS_ENTRENAMIENTO;
 	}
-	cout<<"medias: "<<medias<<endl;
 	return medias;
 }
    
