@@ -483,60 +483,78 @@ vector<int> Knn(matriz& ImagenesEntrenamiento, matriz& ImagenesTest, int k, int 
 
 float Precision(matriz& ImagenesTest, vector<int>& resultados, int j, FILE* ArchivoSalidaReporte){
 
-    // lleno el vector de (verdaderos) positivos con 0.0s // tiene tamaño CANT_CLASES (41)
+    // COUT << "entramos a la función Precision" << endl;
+    // COUT << "CANT_CLASES = " << CANT_CLASES << endl;
+    assert(CANT_CLASES != 0);
+
+    // inicializo el vector de (verdaderos) positivos con 0.0s // tiene tamaño CANT_CLASES (41)
     vector<float> tpi;
     for (int h=0; h<CANT_CLASES; ++h){
         tpi.push_back(0.0);
     }
 
-    // lleno el vector de falsos positivos con 0.0s // es tan largo como la cantidad de clases (41)
+    // inicializo el vector de falsos positivos con 0.0s // tiene tamaño CANT_CLASES (41)
     vector<float> fpi;
     for (int k=0; k<CANT_CLASES; ++k){
         fpi.push_back(0.0);
     }
 
-    // lleno el vector ¿precision clases? con 0.0s // también mide CANT_CLASES
+    // inicializo el vector ¿precision clases? con 0.0s // tiene tamaño CANT_CLASES (41)
     vector<float> precClases;
     for (int k=0; k<CANT_CLASES; ++k){
         precClases.push_back(0.0);
     }
 
     int i = 0;
-    while(i < resultados.size()){ // mientras no haya terminado de recorrer el vector<int> resultados que me pasaron por referencia
+    while(i < resultados.size()){ // mientras no haya terminado de recorrer el vector<int> resultados (que me pasaron por referencia)
 
         for (int m=0; m<CANT_CLASES; ++m){ // por cada clase que haya (41 personas)
 
-            if( m == resultados[i] ){ // si el índice de clase m coincide con el resultado[i] que estoy viendo
+            if( m == resultados[i] ){ // si el índice de clase (m), coincide con el resultado[i] que estoy viendo
 
-                if (ImagenesTest[i][0] == m){ // si la clase de la i-ésima imagen de test coincide con el índice de clase m
+                if (ImagenesTest[i][0] == m){ // si la clase de la i-ésima imagen de test, coincide con el índice de clase (m)
                     //COUT << "ENTRA A TPI " << endl;
-                    tpi[m] = tpi[m] + 1.0; // sumar 1 al vector de (verdaderos) positivos en la posición del índice de clase m
+                    tpi[m] = tpi[m] + 1.0; // sumar 1 al vector de (verdaderos) positivos, en la posición del índice de clase (m)
                 }else{
                     //COUT << "ENTRA A FPI " << endl;
-                    fpi[m] = fpi[m] + 1.0; // sumar 1 al vector de falsos positivos en la posición del índice de clase m
+                    fpi[m] = fpi[m] + 1.0; // sino, sumar 1 al vector de falsos positivos, en la posición del índice de clase (m)
                 }
-            }
+            } // si el índice de clase (m) NO coincide con el resultado[i] que estoy viendo, no hacer nada
         }
 
         i++;
     }
 
-    float divisor;
+    float divisor; // hay que ver que no sea 0
     for (int i=0; i<CANT_CLASES; ++i){
         //COUT << "FPI " << fpi[i] << endl;
         //COUT << "TPI " << tpi[i] << endl;
         float t = tpi[i];
         float f = fpi[i];
         divisor = t+f;
-        //COUT << "t " << t << endl;
-        //COUT << "f " << f << endl;
+        //COUT << "t = " << t << endl;
+        //COUT << "f = " << f << endl;
 
+        //COUT << "t+f = " << t+f << endl;
+        float pre;
+        if (t+f == 0) {
 
-        float pre = t/(t+f);
-        //COUT << "precison " << pre << endl;
+            pre = 1.0; // si hay una clase que no probamos (tp==0 y fp==0), entonces precision=1 (lo dijo Pachi, parece)
+
+        } else {
+
+            pre = t/(t+f);
+            //COUT << "pre = " << pre << endl;
+        }
 
         divisor = tpi[i]+fpi[i];
-        //COUT << "DIVISOR " << divisor << endl;
+        // COUT << "divisor = " << divisor << endl; // a pesar de su nombre, parece que no rompe nada si es 0
+        /*
+        if ( abs(divisor) < 0.000001 ){
+
+            COUT << "Advertencia: módulo de la variable \"divisor\" menor a 0.000001" << endl;
+        }
+        */
 
         precClases[i] = pre;
         //COUT << "prec clase i " << precClases[i] << endl;
@@ -549,8 +567,7 @@ float Precision(matriz& ImagenesTest, vector<int>& resultados, int j, FILE* Arch
         precision = precision + precClases[i];
     }
 
-    precision = precision/CANT_CLASES;
-    return precision;
+    return precision/CANT_CLASES; // el promedio
 }
 
 
