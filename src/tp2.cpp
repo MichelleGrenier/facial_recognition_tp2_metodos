@@ -27,7 +27,7 @@ using namespace std;
 	 ejemplo:  ./tp2 -m 1 -i ../data/test_trivial_e_indices/train_s1_s41_fotomin1_fotomax9_reduced.csv -q ../data/test_trivial_e_indices/test_s1_s41_foto10_reduced.csv -o salida.csv
      
      forma 2 : ./tp2 <archivo con parametros de entrada> <archivo de salida> <method>
-     ejemplo:  ./tp2 ../tests/parametros/test_k3a15K10-1.in ../tests/parametros/test_k3a15K10-1.out 0
+     ejemplo:  ./tp2 ../tests/parametros/test_k3a15K10-1.in ../tests/parametros/test_k3a15K10-1_armador_1_41_1_9_1.out 0
      ejemplo:  ./tp2 test1.in test1.out 1
 			   
 
@@ -39,6 +39,7 @@ matriz ImagenesEntrenamiento, ImagenesTest, matrizCovarianzas, autovectoresTrasp
 matriz ImagenesTestCentradas, ImagenesEntrenamientoPLS, ImagenesTestPLS, ImagenesEntrenamientoPCA, ImagenesTestPCA;
 
 vector<int> resultados;
+vector<int> glosario;
 vector<double> autovalores, media;
 
 string RutaArchivoEntrada = "", RutaArchivoSalida = "", RutaArchivoSalidaReporte = "";
@@ -85,7 +86,7 @@ int main(int argc, char** argv){
         RutaImgsEntrenamiento = PasarAFormatoViejoEntrenamiento(RutaEntrenamientoFormatoNuevo); //pasamos a formato viejo
         assert( strcmp(argv[5], "-q") == 0 );
         RutaPruebaFormatoNuevo= argv[6];
-        RutaImgsPrueba = PasarAFormatoViejoPrueba(RutaPruebaFormatoNuevo);
+        RutaImgsPrueba = PasarAFormatoViejoPrueba(RutaPruebaFormatoNuevo, glosario);
         assert( strcmp(argv[7], "-o") == 0 );
         RutaArchivoSalida = argv[8];
         // los parámetros para la salida:
@@ -222,11 +223,9 @@ int main(int argc, char** argv){
             resultados = Knn(ImagenesEntrenamientoPCA, ImagenesTestPCA, k, alfa, metodo);
         } // si knn + pca
 
-        fprintf(ArchivoSalida, "ImageIndex,Label\n");
-        int i = 0;
-        while ( i < resultados.size() ){
-            fprintf(ArchivoSalida, "%d,%d\n", i+1, resultados[i]);
-            i++;
+        fprintf(ArchivoSalida, "ImageIndex, ImageId, Label\n");
+        for (int i = 0; i < resultados.size(); i++ ){
+            fprintf(ArchivoSalida, "%d,%d,%d\n", i+1, glosario[i], resultados[i]);
         }
     }
     if (argc == 3 || argc == 4) {

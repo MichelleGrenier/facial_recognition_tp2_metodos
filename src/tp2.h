@@ -35,16 +35,15 @@ ifstream ArchivoEntrada;
 ifstream ArchivoEntrenamientoSalida;
 ifstream ArchivoPruebaSalida;
 
+
 typedef vector < vector < double > > matriz; // CAMBIAR A INT ACA Y EN MAIN PARA KNN SIN REDUCCION Y COMENTAR TODO EL CODIGO QUE NO TENGA QUE VER CON EL METODO 0 (FUNCIONA MUCHO MAS RAPIDO), DOUBLE NECESARIO PARA METODOS DE REDUCCION
-
-
 
 
 void escribirMatrizEnConsola(matriz& m);
 
 bool str_terminaEn (std::string const &fullString, std::string const &ending) {
     if (fullString.length() >= ending.length()) {
-        return (0 == fullString.compare (fullString.length() - ending.length(), ending.length(), ending));
+        return (0 == fullString.compare (fullString.length() - ending.length()+1, ending.length(), ending));
     } else {
         return false;
     }
@@ -123,7 +122,7 @@ string PasarAFormatoViejoEntrenamiento(string RutaEntrenamientoFormatoNuevo){
 
 
 
-string PasarAFormatoViejoPrueba( string RutaPruebaFormatoNuevo){
+string PasarAFormatoViejoPrueba( string RutaPruebaFormatoNuevo, vector<int>& glosario){
 
     string infilePath = RutaPruebaFormatoNuevo;
     replace(RutaPruebaFormatoNuevo, ".csv", "_viejo.csv");
@@ -142,7 +141,8 @@ string PasarAFormatoViejoPrueba( string RutaPruebaFormatoNuevo){
         string idImagen;
         getline(linestream,rutaImagen,',');
         getline(linestream,idImagen,',');
-        uchar* data = NULL;
+		glosario.push_back(stoi(idImagen) ); //guardo en el glosario en el indice de la imagen de entrada el id con el q se corresponde
+		uchar* data = NULL;
         int width = 0, height = 0;
         PPM_LOADER_PIXEL_TYPE pt = PPM_LOADER_PIXEL_TYPE_INVALID;
         bool ret = LoadPPMFile(&data, &width, &height, &pt, rutaImagen.c_str());
